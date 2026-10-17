@@ -541,11 +541,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\barbc\\source\\repos\\FCG_Catalog\\FCG_Catalog\\FCG_Catalog.csproj",
-      "projectName": "FCG_Catalog",
-      "projectPath": "C:\\Users\\barbc\\source\\repos\\FCG_Catalog\\FCG_Catalog\\FCG_Catalog.csproj",
+      "projectUniqueName": "C:\\Users\\barbc\\source\\repos\\FCG_Catalog\\FCG_CatalogAPI\\FCG_CatalogAPI.csproj",
+      "projectName": "FCG_CatalogAPI",
+      "projectPath": "C:\\Users\\barbc\\source\\repos\\FCG_Catalog\\FCG_CatalogAPI\\FCG_CatalogAPI.csproj",
       "packagesPath": "C:\\Users\\barbc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\barbc\\source\\repos\\FCG_Catalog\\FCG_Catalog\\obj\\",
+      "outputPath": "C:\\Users\\barbc\\source\\repos\\FCG_Catalog\\FCG_CatalogAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
