@@ -1,30 +1,24 @@
-# Acesse https://aka.ms/customizecontainer para saber como personalizar seu contêiner de depuração e como o Visual Studio usa este Dockerfile para criar suas imagens para uma depuração mais rápida.
-
-# Esta fase é usada durante a execução no VS no modo rápido (Padrão para a configuração de Depuração)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-
-# Esta fase é usada para compilar o projeto de serviço
+# Etapa 1: build da aplicação
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["FCG_Catalog/FCG_Catalog.csproj", "FCG_Catalog/"]
-RUN dotnet restore "./FCG_Catalog/FCG_Catalog.csproj"
+
+# Copia todo o código da solução para o contexto de build
 COPY . .
-WORKDIR "/src/FCG_Catalog"
-RUN dotnet build "./FCG_Catalog.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./FCG_Catalog.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Restaura dependências a partir da solução (projetos estão em src/)
+RUN dotnet restore FCG_Catalog.sln
 
-# Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
-FROM base AS final
+# Compila e publica o projeto web (localizado em src/FCG_Catalog)
+RUN dotnet publish src/FCG_CatalogAPI/FCG_CatalogAPI.csproj -c Release -o /app
+
+# Etapa 2: imagem final para rodar
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app .
+
+# A partir do .NET 8 a imagem do ASP.NET escuta na 8080, e não mais na 80 — o
+# container roda como usuário sem privilégio, que não pode abrir portas abaixo de 1024.
+EXPOSE 8080
+
+# Comando de inicialização
 ENTRYPOINT ["dotnet", "FCG_Catalog.dll"]

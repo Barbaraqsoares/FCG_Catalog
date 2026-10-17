@@ -1,0 +1,43 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: FCG_CatalogSQL
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    # O SQL Server leva cerca de meio minuto entre iniciar o processo e aceitar
+    # conexões. Sem este healthcheck o Compose considera o serviço pronto assim que
+    # o container sobe, e a aplicação tenta migrar contra um banco que ainda não
+    # responde.
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  webapp:
+    build: .
+    depends_on:
+      sqlserver:
+        # Espera o healthcheck passar, não apenas o container iniciar.
+        condition: service_healthy
+    environment:
+      # Dentro do container, "localhost" é o próprio container da aplicação — o
+      # appsettings.json aponta para localhost porque serve ao cenário de rodar a API
+      # na máquina. Aqui o host correto é o nome do serviço do Compose.
+      - ConnectionStrings__SqlConnection=Server=sqlserver,1433;Database=TechChallengeDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    ports:
+      # 8080 dos dois lados: é a porta em que o Kestrel escuta na imagem do .NET 8.
+      - "8080:8080"
+    # Rede de segurança: a aplicação encerra de propósito quando não consegue
+    # preparar o banco, então se algo ainda assim falhar na largada o Compose tenta
+    # de novo em vez de deixar o serviço fora do ar.
+    restart: on-failure:3
+
+volumes:
+  sqlvolume:
