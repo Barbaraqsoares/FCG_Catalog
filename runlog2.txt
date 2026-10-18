@@ -1,0 +1,177 @@
+Usando as configurações de inicialização de src\FCG_CatalogAPI\Properties\launchSettings.json...
+Compilando...
+  Determinando os projetos a serem restaurados...
+  Todos os projetos estão atualizados para restauração.
+  FCG_CatalogAPI -> C:\Users\barbc\source\repos\FCG_Catalog\src\FCG_CatalogAPI\bin\Debug\net8.0\FCG_CatalogAPI.dll
+[18:08:24 INF] Aplicando migrations pendentes...
+[18:08:24 WRN] No store type was specified for the decimal property 'Price' on entity type 'Game'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+[18:08:24 WRN] No store type was specified for the decimal property 'Discount' on entity type 'Promotion'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+[18:08:24 INF] Executed DbCommand (12ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+[18:08:24 INF] Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+[18:08:24 INF] Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+[18:08:24 INF] Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+[18:08:24 INF] Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+[18:08:24 INF] No migrations were applied. The database is already up to date.
+[18:08:24 INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (Size = 4000), @p2='?' (DbType = Boolean), @p3='?' (DbType = Boolean), @p4='?' (Size = 4000), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = DateTime2), @p7='?' (DbType = DateTime2), @p8='?' (Size = 4000), @p9='?' (DbType = Boolean), @p10='?' (DbType = Boolean), @p11='?' (Size = 4000), @p12='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p13='?' (DbType = DateTime2), @p14='?' (DbType = DateTime2), @p15='?' (Size = 4000), @p16='?' (DbType = Boolean), @p17='?' (DbType = Boolean), @p18='?' (Size = 4000), @p19='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p20='?' (DbType = DateTime2), @p21='?' (DbType = DateTime2), @p22='?' (Size = 4000), @p23='?' (DbType = Boolean), @p24='?' (DbType = Boolean), @p25='?' (Size = 4000), @p26='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p27='?' (DbType = DateTime2), @p28='?' (DbType = DateTime2), @p29='?' (Size = 4000), @p30='?' (DbType = Boolean), @p31='?' (DbType = Boolean), @p32='?' (Size = 4000), @p33='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p34='?' (DbType = DateTime2), @p35='?' (DbType = DateTime2), @p36='?' (Size = 4000), @p37='?' (DbType = Boolean), @p38='?' (DbType = Boolean), @p39='?' (Size = 4000), @p40='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p41='?' (DbType = DateTime2), @p42='?' (DbType = DateTime2), @p43='?' (Size = 4000), @p44='?' (DbType = Boolean), @p45='?' (DbType = Boolean), @p46='?' (Size = 4000), @p47='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p48='?' (DbType = DateTime2), @p49='?' (DbType = DateTime2), @p50='?' (Size = 4000), @p51='?' (DbType = Boolean), @p52='?' (DbType = Boolean), @p53='?' (Size = 4000), @p54='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p55='?' (DbType = DateTime2), @p56='?' (DbType = DateTime2), @p57='?' (Size = 4000), @p58='?' (DbType = Boolean), @p59='?' (DbType = Boolean), @p60='?' (Size = 4000), @p61='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p62='?' (DbType = DateTime2), @p63='?' (DbType = DateTime2), @p64='?' (Size = 4000), @p65='?' (DbType = Boolean), @p66='?' (DbType = Boolean), @p67='?' (Size = 4000), @p68='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p69='?' (DbType = DateTime2), @p70='?' (DbType = DateTime2), @p71='?' (Size = 4000), @p72='?' (DbType = Boolean), @p73='?' (DbType = Boolean), @p74='?' (Size = 4000), @p75='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p76='?' (DbType = DateTime2), @p77='?' (DbType = DateTime2), @p78='?' (Size = 4000), @p79='?' (DbType = Boolean), @p80='?' (DbType = Boolean), @p81='?' (Size = 4000), @p82='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p83='?' (DbType = DateTime2), @p84='?' (DbType = DateTime2), @p85='?' (Size = 4000), @p86='?' (DbType = Boolean), @p87='?' (DbType = Boolean), @p88='?' (Size = 4000), @p89='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p90='?' (DbType = DateTime2), @p91='?' (DbType = DateTime2), @p92='?' (Size = 4000), @p93='?' (DbType = Boolean), @p94='?' (DbType = Boolean), @p95='?' (Size = 4000), @p96='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p97='?' (DbType = DateTime2), @p98='?' (DbType = DateTime2), @p99='?' (Size = 4000), @p100='?' (DbType = Boolean), @p101='?' (DbType = Boolean), @p102='?' (Size = 4000), @p103='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p104='?' (DbType = DateTime2), @p105='?' (DbType = DateTime2), @p106='?' (Size = 4000), @p107='?' (DbType = Boolean), @p108='?' (DbType = Boolean), @p109='?' (Size = 4000), @p110='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p111='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+MERGE [Games] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, 0),
+(@p7, @p8, @p9, @p10, @p11, @p12, @p13, 1),
+(@p14, @p15, @p16, @p17, @p18, @p19, @p20, 2),
+(@p21, @p22, @p23, @p24, @p25, @p26, @p27, 3),
+(@p28, @p29, @p30, @p31, @p32, @p33, @p34, 4),
+(@p35, @p36, @p37, @p38, @p39, @p40, @p41, 5),
+(@p42, @p43, @p44, @p45, @p46, @p47, @p48, 6),
+(@p49, @p50, @p51, @p52, @p53, @p54, @p55, 7),
+(@p56, @p57, @p58, @p59, @p60, @p61, @p62, 8),
+(@p63, @p64, @p65, @p66, @p67, @p68, @p69, 9),
+(@p70, @p71, @p72, @p73, @p74, @p75, @p76, 10),
+(@p77, @p78, @p79, @p80, @p81, @p82, @p83, 11),
+(@p84, @p85, @p86, @p87, @p88, @p89, @p90, 12),
+(@p91, @p92, @p93, @p94, @p95, @p96, @p97, 13),
+(@p98, @p99, @p100, @p101, @p102, @p103, @p104, 14),
+(@p105, @p106, @p107, @p108, @p109, @p110, @p111, 15)) AS i ([CreatedAt], [Description], [IsActive], [IsMultiplayer], [Name], [Price], [UpdatedAt], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CreatedAt], [Description], [IsActive], [IsMultiplayer], [Name], [Price], [UpdatedAt])
+VALUES (i.[CreatedAt], i.[Description], i.[IsActive], i.[IsMultiplayer], i.[Name], i.[Price], i.[UpdatedAt])
+OUTPUT INSERTED.[Id], i._Position;
+[18:08:24 INF] Banco de dados pronto.
+MassTransit.ConfigurationException: The bus configuration is invalid:
+[Failure] License must be specified with SetLicense/SetLicenseLocation or by setting the MT_LICENSE/MT_LICENSE_PATH environment variables. See https://masstransit.massient.com/configuration/license for details.
+   at MassTransit.MassTransitExceptionExtensions.ThrowIfContainsFailure(IEnumerable`1 results, String prefix) in D:\a\MassTransit\MassTransit\src\MassTransit.Abstractions\Exceptions\MassTransitExceptionExtensions.cs:line 26
+   at MassTransit.Configuration.TransportRegistrationBusFactory`1.CreateBus[T,TConfigurator](T configurator, IBusRegistrationContext context, Action`2 configure, IEnumerable`1 specifications) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\TransportRegistrationBusFactory.cs:line 54
+   at MassTransit.RabbitMqTransport.Configuration.RabbitMqRegistrationBusFactory.CreateBus(IBusRegistrationContext context, IEnumerable`1 specifications, String busName) in D:\a\MassTransit\MassTransit\src\Transports\MassTransit.RabbitMqTransport\RabbitMqTransport\Configuration\RabbitMqRegistrationBusFactory.cs:line 71
+   at MassTransit.Configuration.ServiceCollectionBusConfigurator.CreateBus[T](T busFactory, IServiceProvider provider) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\ServiceCollectionBusConfigurator.cs:line 156
+   at MassTransit.Configuration.ServiceCollectionBusConfigurator.<>c__DisplayClass9_0`1.<SetBusFactory>b__0(IServiceProvider provider) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\ServiceCollectionBusConfigurator.cs:line 108
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.CreateServiceAccessor(ServiceIdentifier serviceIdentifier)
+   at System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(TKey key, Func`2 valueFactory)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at MassTransit.Configuration.ServiceCollectionBusConfigurator.<>c__9`1.<SetBusFactory>b__9_1(IServiceProvider provider) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\ServiceCollectionBusConfigurator.cs:line 110
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.CreateServiceAccessor(ServiceIdentifier serviceIdentifier)
+   at System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(TKey key, Func`2 valueFactory)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in C:\Users\barbc\source\repos\FCG_Catalog\src\FCG_CatalogAPI\Program.cs:line 81
+[18:08:24 FTL] A aplicação não pôde ser iniciada
+MassTransit.ConfigurationException: The bus configuration is invalid:
+[Failure] License must be specified with SetLicense/SetLicenseLocation or by setting the MT_LICENSE/MT_LICENSE_PATH environment variables. See https://masstransit.massient.com/configuration/license for details.
+   at MassTransit.MassTransitExceptionExtensions.ThrowIfContainsFailure(IEnumerable`1 results, String prefix) in D:\a\MassTransit\MassTransit\src\MassTransit.Abstractions\Exceptions\MassTransitExceptionExtensions.cs:line 26
+   at MassTransit.Configuration.TransportRegistrationBusFactory`1.CreateBus[T,TConfigurator](T configurator, IBusRegistrationContext context, Action`2 configure, IEnumerable`1 specifications) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\TransportRegistrationBusFactory.cs:line 54
+   at MassTransit.RabbitMqTransport.Configuration.RabbitMqRegistrationBusFactory.CreateBus(IBusRegistrationContext context, IEnumerable`1 specifications, String busName) in D:\a\MassTransit\MassTransit\src\Transports\MassTransit.RabbitMqTransport\RabbitMqTransport\Configuration\RabbitMqRegistrationBusFactory.cs:line 71
+   at MassTransit.Configuration.ServiceCollectionBusConfigurator.CreateBus[T](T busFactory, IServiceProvider provider) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\ServiceCollectionBusConfigurator.cs:line 156
+   at MassTransit.Configuration.ServiceCollectionBusConfigurator.<>c__DisplayClass9_0`1.<SetBusFactory>b__0(IServiceProvider provider) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\ServiceCollectionBusConfigurator.cs:line 108
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.CreateServiceAccessor(ServiceIdentifier serviceIdentifier)
+   at System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(TKey key, Func`2 valueFactory)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at MassTransit.Configuration.ServiceCollectionBusConfigurator.<>c__9`1.<SetBusFactory>b__9_1(IServiceProvider provider) in D:\a\MassTransit\MassTransit\src\MassTransit\DependencyInjection\Configuration\ServiceCollectionBusConfigurator.cs:line 110
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.CreateServiceAccessor(ServiceIdentifier serviceIdentifier)
+   at System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(TKey key, Func`2 valueFactory)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Program.<Main>$(String[] args) in C:\Users\barbc\source\repos\FCG_Catalog\src\FCG_CatalogAPI\Program.cs:line 81

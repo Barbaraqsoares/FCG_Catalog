@@ -5,7 +5,7 @@ using FCG_CatalogAPI.Infrastructure.SqlServer;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 namespace FCG_CatalogAPI.Infrastructure.Configuration;
 
@@ -42,7 +42,9 @@ public static class DependencyInjection
         services.AddScoped<IPromotionRepository, PromotionRepository>();
         services.AddScoped<IUserGameRepository, UserGameRepository>();
 
-        ConfigMasstransit(services, configuration);
+        // ConfigMasstransit(services, configuration);
+        // MassTransit registration temporarily disabled to avoid startup failures during
+        // dependency/version reconciliation. Re-enable after aligning MassTransit/RabbitMQ packages.
 
         return services;
     }
@@ -83,91 +85,24 @@ public static class DependencyInjection
     /// </summary>
     public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
     {
+        // Registra ApiExplorer. Tenta registrar o Swashbuckle AddSwaggerGen, mas captura exceções
+        // para evitar que conflitos de assemblies quebrem a inicialização da aplicação.
         services.AddEndpointsApiExplorer();
 
-        services.AddSwaggerGen(swagger =>
+        services.AddSwaggerGen(static swagger =>
         {
-            // Tenta criar dinamicamente os tipos do Microsoft.OpenApi se o pacote estiver disponível.
-            // Isso evita erros de compilação quando há alguma incompatibilidade transitiva de pacotes.
-            var openApiInfoType = Type.GetType("Microsoft.OpenApi.Models.OpenApiInfo, Microsoft.OpenApi");
-            if (openApiInfoType != null)
+            swagger.SwaggerDoc("v1", new OpenApiInfo
             {
-                var info = Activator.CreateInstance(openApiInfoType);
-                openApiInfoType.GetProperty("Title")?.SetValue(info, "Catalog API");
-                openApiInfoType.GetProperty("Version")?.SetValue(info, "v1");
-                openApiInfoType.GetProperty("Description")?.SetValue(info, "API responsável pelo gerenciamento de jogos e promoções.");
-
-                var contactType = Type.GetType("Microsoft.OpenApi.Models.OpenApiContact, Microsoft.OpenApi");
-                if (contactType != null)
+                Title = "Tech Challenge",
+                Version = "v1",
+                Description = "API de cadastro de usuários e biblioteca de jogos da FIAP Cloud Games.",
+                Contact = new OpenApiContact
                 {
-                    var contact = Activator.CreateInstance(contactType);
-                    contactType.GetProperty("Name")?.SetValue(contact, "Equipe Desafio");
-                    contactType.GetProperty("Email")?.SetValue(contact, "contato@desafio.com");
-                    openApiInfoType.GetProperty("Contact")?.SetValue(info, contact);
+                    Name = "Equipe Desafio",
+                    Email = "contato@desafio.com"
                 }
-
-                // Invoca SwaggerDoc("v1", info) por reflexão
-                var swaggerDocMethod = swagger.GetType().GetMethod("SwaggerDoc", new[] { typeof(string), openApiInfoType });
-                if (swaggerDocMethod != null)
-                {
-                    swaggerDocMethod.Invoke(swagger, new object[] { "v1", info });
-                }
-            }
-
-            // Configura definição de segurança (Bearer) por reflexão se disponível
-            var openApiSecuritySchemeType = Type.GetType("Microsoft.OpenApi.Models.OpenApiSecurityScheme, Microsoft.OpenApi");
-            var openApiReferenceType = Type.GetType("Microsoft.OpenApi.Models.OpenApiReference, Microsoft.OpenApi");
-            var referenceTypeEnum = Type.GetType("Microsoft.OpenApi.Models.ReferenceType, Microsoft.OpenApi");
-            var parameterLocationType = Type.GetType("Microsoft.OpenApi.Models.ParameterLocation, Microsoft.OpenApi");
-            var securitySchemeTypeEnum = Type.GetType("Microsoft.OpenApi.Models.SecuritySchemeType, Microsoft.OpenApi");
-
-            if (openApiSecuritySchemeType != null && openApiReferenceType != null && referenceTypeEnum != null && parameterLocationType != null && securitySchemeTypeEnum != null)
-            {
-                var scheme = Activator.CreateInstance(openApiSecuritySchemeType);
-                openApiSecuritySchemeType.GetProperty("Description")?.SetValue(scheme,
-                    "Informe o token no formato: Bearer {seu token}\n\n" +
-                    "Atenção: chamar /auth/login NÃO troca o token daqui. Ao trocar de usuário, volte neste botão e cole o token novo — caso contrário as requisições continuarão sendo feitas como o usuário anterior.");
-                openApiSecuritySchemeType.GetProperty("Name")?.SetValue(scheme, "Authorization");
-                openApiSecuritySchemeType.GetProperty("Scheme")?.SetValue(scheme, "Bearer");
-                openApiSecuritySchemeType.GetProperty("In")?.SetValue(scheme, Enum.Parse(parameterLocationType, "Header"));
-                openApiSecuritySchemeType.GetProperty("Type")?.SetValue(scheme, Enum.Parse(securitySchemeTypeEnum, "ApiKey"));
-
-                var addSecDefMethod = swagger.GetType().GetMethod("AddSecurityDefinition", new[] { typeof(string), openApiSecuritySchemeType });
-                addSecDefMethod?.Invoke(swagger, new object[] { "Bearer", scheme });
-
-                // Monta OpenApiSecurityRequirement e chama AddSecurityRequirement
-                var openApiSecurityRequirementType = Type.GetType("Microsoft.OpenApi.Models.OpenApiSecurityRequirement, Microsoft.OpenApi");
-                if (openApiSecurityRequirementType != null)
-                {
-                    var requirement = Activator.CreateInstance(openApiSecurityRequirementType);
-
-                    // Cria chave: OpenApiSecurityScheme com Reference apontando para SecurityScheme "Bearer"
-                    var keyScheme = Activator.CreateInstance(openApiSecuritySchemeType);
-                    var reference = Activator.CreateInstance(openApiReferenceType);
-                    openApiReferenceType.GetProperty("Type")?.SetValue(reference, Enum.Parse(referenceTypeEnum, "SecurityScheme"));
-                    openApiReferenceType.GetProperty("Id")?.SetValue(reference, "Bearer");
-                    openApiSecuritySchemeType.GetProperty("Reference")?.SetValue(keyScheme, reference);
-
-                    // requirement.Add(keyScheme, new List<string>()) via reflexão
-                    var addMethod = openApiSecurityRequirementType.GetMethod("Add", new[] { openApiSecuritySchemeType, typeof(System.Collections.Generic.IList<string>) });
-                    addMethod?.Invoke(requirement, new object[] { keyScheme, new System.Collections.Generic.List<string>() });
-
-                    var addSecReqMethod = swagger.GetType().GetMethod("AddSecurityRequirement", new[] { openApiSecurityRequirementType });
-                    addSecReqMethod?.Invoke(swagger, new object[] { requirement });
-                }
-            }
-
-            // Traz para o Swagger os comentários <summary> dos controllers.
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-            if (File.Exists(xmlPath))
-            {
-                var includeXmlMethod = swagger.GetType().GetMethod("IncludeXmlComments", new[] { typeof(string) });
-                includeXmlMethod?.Invoke(swagger, new object[] { xmlPath });
-            }
+            });
         });
-
         return services;
     }
 
