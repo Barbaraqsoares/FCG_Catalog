@@ -1,26 +1,92 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FCG_CatalogAPI.Adapters.Inbound.Requests;
+using FCG_CatalogAPI.Adapters.Inbound.Responses;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FCG_CatalogAPI.Adapters.Inbound.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-/// <summary>
-/// CRUD operations for games.
-/// </summary>
-public class GamesController : ControllerBase
+[Route("[controller]")]
+[Authorize]
+public class GameController : ControllerBase
 {
-    private readonly IPublishEndpoint _publisher;
+    private readonly IGameUseCase _gameUseCase;
 
-    public GamesController(IPublishEndpoint publisher)
+    public GameController(IGameUseCase gameUseCase)
     {
-        _publisher = publisher;
+        _gameUseCase = gameUseCase;
     }
 
-    [HttpPost("{gameId}/buy")]
-    public async Task<IActionResult> BuyGame(Guid gameId, [FromBody] Guid userId)
+    /// <summary>
+    /// Retorna todos os games disponíveis.
+    /// </summary>
+    [HttpGet]
+    [Authorize(Roles = "Admin,Client")]
+    [ProducesResponseType(typeof(IEnumerable<GameResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetallGames()
     {
-        // Publica evento de compra
-        await _publisher.Publish(new OrderPlacedEvent(userId, gameId, 59.90m));
-        return Accepted("Order placed");
+        var games = await _gameUseCase.GetAllAsync();
+
+        return Ok(games);
+    }
+
+    /// <summary>
+    /// Retorna um game específico pelo ID.
+    /// </summary>
+    /// <param name="id">Identificador do game.</param>
+    [HttpGet("{id}")]
+    [Authorize(Roles = "Admin,Client")]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetGameById(int id)
+    {
+        return Ok(await _gameUseCase.GetByIdAsync(id));
+    }
+
+    /// <summary>
+    /// Cria um novo game (apenas para administradores).
+    /// </summary>
+    /// <param name="request">Nome, descrição, preço e se é multiplayer.</param>
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Create([FromBody] CreateGameRequest request)
+    {
+        var createdGame = await _gameUseCase.CreateAsync(request);
+
+        return CreatedAtAction(nameof(GetGameById), new { id = createdGame.Id }, createdGame);
+    }
+
+    /// <summary>
+    /// Atualiza um game existente pelo ID (apenas para administradores).
+    /// </summary>
+    /// <param name="id">Identificador do game.</param>
+    /// <param name="request">Dados do game, incluindo se continua ativo no catálogo.</param>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateGame(int id, [FromBody] UpdateGameRequest request)
+    {
+        return Ok(await _gameUseCase.UpdateAsync(id, request));
+    }
+
+    /// <summary>
+    /// Deleta um game existente pelo ID (apenas para administradores).
+    /// </summary>
+    /// <param name="id">Identificador do game.</param>
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteGame(int id)
+    {
+        await _gameUseCase.DeleteAsync(id);
+
+        return NoContent();
     }
 }
