@@ -9,7 +9,6 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
     public void Configure(EntityTypeBuilder<Game> builder)
     {
         builder.ToTable("Games");
-
         builder.Property(p => p.Id).HasColumnType("int").UseIdentityColumn();
         builder.Property(p => p.Name).IsRequired().HasColumnType("nvarchar(100)");
         builder.Property(p => p.Description).HasColumnType("nvarchar(max)");

@@ -1,9 +1,5 @@
 ﻿namespace FCG_CatalogAPI.Domain.Entities;
 
-
-/// <summary>
-/// Summary description for Class1
-/// </summary>
 public sealed class Game : EntityBase
 {
     public required string Name { get; set; }

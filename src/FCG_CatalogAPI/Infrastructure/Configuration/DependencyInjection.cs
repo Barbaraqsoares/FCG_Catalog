@@ -2,6 +2,7 @@
 using FCG_CatalogAPI.Application.UseCases;
 using FCG_CatalogAPI.Domain.Ports;
 using FCG_CatalogAPI.Infrastructure.SqlServer;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -48,11 +49,7 @@ public static class DependencyInjection
     /// pelo ExceptionHandlingMiddleware, para que quem consome a API trate todos os
     /// erros da mesma maneira — inclusive os gerados pelo pipeline de autorização.
     /// </summary>
-    private static async Task WriteProblemDetails(
-        HttpContext context,
-        int statusCode,
-        string title,
-        string detail)
+    private static async Task WriteProblemDetails(HttpContext context, int statusCode, string title, string detail)
     {
         // Se a resposta já começou a ser enviada, não é mais possível alterá-la.
         if (context.Response.HasStarted)
@@ -89,9 +86,9 @@ public static class DependencyInjection
         {
             swagger.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Tech Challenge",
+                Title = "Catalog API",
                 Version = "v1",
-                Description = "API de cadastro de usuários e biblioteca de jogos da FIAP Cloud Games.",
+                Description = "API responsável pelo gerenciamento de jogos e promoções.",
                 Contact = new OpenApiContact
                 {
                     Name = "Equipe Desafio",
@@ -138,6 +135,24 @@ public static class DependencyInjection
             }
         });
 
+        return services;
+    }
+
+    public static async Task ConfigMasstransit(this IServiceCollection services)
+    {
+        services.AddMassTransit(x =>
+        {
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host("localhost", "/", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+            });
+        });
+        // Se você quiser usar o MassTransit Hosted Service para iniciar e parar o bus automaticamente
+        services.AddMassTransitHostedService();
         return services;
     }
 }

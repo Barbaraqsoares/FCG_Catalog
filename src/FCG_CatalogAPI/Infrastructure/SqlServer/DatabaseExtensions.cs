@@ -29,7 +29,7 @@ public static class DatabaseExtensions
 
         await context.Database.MigrateAsync();
 
-        await DbInitializer.InitializeAsync(context);
+        await DbInitializer.InitialyzeCatalogAsync(context);
 
         logger.LogInformation("Banco de dados pronto.");
     }

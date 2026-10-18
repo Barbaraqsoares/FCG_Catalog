@@ -2,7 +2,7 @@
 
 namespace FCG_CatalogAPI.Infrastructure.SqlServer;
 
-public static class DbInicialize
+public static class DbInitializer
 {
     public static async Task InitialyzeCatalogAsync(CatalogDbContext context)
     {
