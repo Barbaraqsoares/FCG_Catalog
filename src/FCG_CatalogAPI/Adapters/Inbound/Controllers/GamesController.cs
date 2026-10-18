@@ -1,5 +1,6 @@
 ﻿using FCG_CatalogAPI.Adapters.Inbound.Requests;
 using FCG_CatalogAPI.Adapters.Inbound.Responses;
+using FCG_CatalogAPI.Domain.Ports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,6 @@ namespace FCG_CatalogAPI.Adapters.Inbound.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
 public class GameController : ControllerBase
 {
     private readonly IGameUseCase _gameUseCase;

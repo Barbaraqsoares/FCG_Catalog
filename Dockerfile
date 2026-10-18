@@ -21,4 +21,4 @@ COPY --from=build /app .
 EXPOSE 8080
 
 # Comando de inicialização
-ENTRYPOINT ["dotnet", "FCG_Catalog.dll"]
+ENTRYPOINT ["dotnet", "FCG_CatalogAPI.dll"]

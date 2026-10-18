@@ -1,11 +1,13 @@
 ﻿using FCG_CatalogAPI.Adapters.Outbound;
 using FCG_CatalogAPI.Application.UseCases;
+using FCG_CatalogAPI.Domain.Ports;
+using FCG_CatalogAPI.Infrastructure.SqlServer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
-namespace FCG_CatalogAPI.Domain.Ports;
+namespace FCG_CatalogAPI.Infrastructure.Configuration;
 
 /// <summary>
 /// Registra os serviços da camada de API (controllers, autenticação e Swagger).
@@ -22,7 +24,7 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("SqlConnection")
             ?? configuration.GetConnectionString("DefaultConnection");
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<CatalogDbContext>(options =>
         {
             options.UseSqlServer(
                 connectionString,
@@ -33,8 +35,10 @@ public static class DependencyInjection
             );
         });
 
-        services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IGameUseCase, GameUseCase>();
+        services.AddScoped<IPromotionUseCase, PromotionUseCase>();
+        services.AddScoped<IGameRepository, GameRepository>();
+        services.AddScoped<IPromotionRepository, PromotionRepository>();
 
         return services;
     }
@@ -72,95 +76,6 @@ public static class DependencyInjection
             problemDetails,
             options: null,
             contentType: "application/problem+json");
-    }
-
-    /// <summary>
-    /// Autenticação por token JWT, conforme exigido pelo desafio.
-    /// As configurações vêm da seção "Jwt" do appsettings — as mesmas usadas pelo
-    /// TokenService para assinar, de modo que assinatura e validação sempre batem.
-    /// </summary>
-    public static IServiceCollection AddJwtAuthentication(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        var jwt = configuration.GetSection(JwtSettings.SecaoConfiguracao).Get<JwtSettings>()
-            ??
-            throw new InvalidOperationException("A seção 'Jwt' não foi encontrada na configuração.");
-
-        if (jwt.SecretKey.Length < 32)
-        {
-            // O HMAC-SHA256 exige uma chave de 256 bits. Com menos que isso a
-            // aplicação só falharia ao validar o primeiro token, em runtime.
-            throw new InvalidOperationException("A chave 'Jwt:SecretKey' precisa ter no mínimo 32 caracteres.");
-        }
-
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-
-                ValidIssuer = jwt.Issuer,
-                ValidAudience = jwt.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(jwt.SecretKey)),
-
-                // Sem isso o .NET aceita um token até 5 minutos após expirar.
-                ClockSkew = TimeSpan.Zero
-            };
-
-
-            // 401 e 403 não passam pelo ExceptionHandlingMiddleware: o pipeline de
-            // autenticação/autorização encerra a requisição antes dos controllers,
-            // sem lançar exceção. Estes eventos são o lugar de padronizar as duas
-            // respostas no mesmo formato ProblemDetails do resto da API.
-            options.Events = new JwtBearerEvents
-            {
-                // Token ausente, inválido ou expirado.
-                OnChallenge = context =>
-                {
-                    // Sem isto o ASP.NET escreveria a resposta vazia padrão por cima
-                    // da nossa.
-                    context.HandleResponse();
-
-                    // HandleResponse também cancela a escrita automática do
-                    // WWW-Authenticate — e a RFC 9110 exige esse header no 401.
-                    // Reproduzimos aqui os mesmos dois valores que o framework
-                    // produzia: "Bearer" quando não veio token, e
-                    // Bearer error="invalid_token" quando o token foi recusado.
-                    context.Response.Headers.WWWAuthenticate = string.IsNullOrEmpty(context.Error)
-                        ? "Bearer"
-                        : $"Bearer error=\"{context.Error}\"";
-
-                    var tokenExpirado = context.AuthenticateFailure is SecurityTokenExpiredException;
-
-                    return WriteProblemDetails(
-                        context.HttpContext,
-                        StatusCodes.Status401Unauthorized,
-                        "Não autenticado",
-                        tokenExpirado
-                            ? "Seu token expirou. Autentique-se novamente em /api/auth/login."
-                            : "Informe um token válido no cabeçalho Authorization, no formato: Bearer {token}.");
-                },
-
-                // Autenticado, mas o perfil não tem permissão para o endpoint.
-                OnForbidden = context => WriteProblemDetails(
-                    context.HttpContext,
-                    StatusCodes.Status403Forbidden,
-                    "Acesso negado",
-                    "Seu perfil não tem permissão para acessar este recurso.")
-            };
-        });
-
-        return services;
     }
 
     /// <summary>

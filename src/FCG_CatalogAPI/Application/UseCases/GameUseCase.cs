@@ -9,7 +9,7 @@ namespace FCG_CatalogAPI.Application.UseCases;
 public class GameUseCase : IGameUseCase
 {
     private readonly IGameRepository _gameRepository;
-    public GameService(IGameRepository gameRepository)
+    public GameUseCase(IGameRepository gameRepository)
     {
         _gameRepository = gameRepository;
     }

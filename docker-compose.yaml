@@ -4,7 +4,7 @@ services:
     container_name: FCG_CatalogSQL
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_SA_PASSWORD=Your_password123
     ports:
       - "1433:1433"
     volumes:
@@ -30,7 +30,7 @@ services:
       # Dentro do container, "localhost" é o próprio container da aplicação — o
       # appsettings.json aponta para localhost porque serve ao cenário de rodar a API
       # na máquina. Aqui o host correto é o nome do serviço do Compose.
-      - ConnectionStrings__SqlConnection=Server=sqlserver,1433;Database=TechChallengeDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__Default=Server=FCG_CatalogSQL,1433;Database=CatalogDb;User Id=sa;Password=Your_password123;TrustServerCertificate=True;
     ports:
       # 8080 dos dois lados: é a porta em que o Kestrel escuta na imagem do .NET 8.
       - "8080:8080"

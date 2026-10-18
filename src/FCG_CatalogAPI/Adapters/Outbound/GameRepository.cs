@@ -1,13 +1,15 @@
 using FCG_CatalogAPI.Domain.Entities;
 using FCG_CatalogAPI.Domain.Ports;
+using FCG_CatalogAPI.Infrastructure.SqlServer;
+using Microsoft.EntityFrameworkCore;
 
 namespace FCG_CatalogAPI.Adapters.Outbound;
 
 public class GameRepository : IGameRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly CatalogDbContext _context;
 
-    public GameRepository(ApplicationDbContext context)
+    public GameRepository(CatalogDbContext context)
     {
         _context = context;
     }
