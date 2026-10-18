@@ -1,6 +1,5 @@
 ﻿using FCG_CatalogAPI.Adapters.Inbound.Responses;
 using FCG_CatalogAPI.Domain.Ports;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

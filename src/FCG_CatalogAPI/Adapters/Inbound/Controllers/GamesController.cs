@@ -1,7 +1,6 @@
 ﻿using FCG_CatalogAPI.Adapters.Inbound.Requests;
 using FCG_CatalogAPI.Adapters.Inbound.Responses;
 using FCG_CatalogAPI.Domain.Ports;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FCG_CatalogAPI.Adapters.Inbound.Controllers;
@@ -21,7 +20,6 @@ public class GameController : ControllerBase
     /// Retorna todos os games disponíveis.
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin,Client")]
     [ProducesResponseType(typeof(IEnumerable<GameResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetallGames()
@@ -36,7 +34,6 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="id">Identificador do game.</param>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin,Client")]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameById(int id)
@@ -49,7 +46,6 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="request">Nome, descrição, preço e se é multiplayer.</param>
     [HttpPost]
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
@@ -66,7 +62,6 @@ public class GameController : ControllerBase
     /// <param name="id">Identificador do game.</param>
     /// <param name="request">Dados do game, incluindo se continua ativo no catálogo.</param>
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -80,7 +75,6 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="id">Identificador do game.</param>
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGame(int id)

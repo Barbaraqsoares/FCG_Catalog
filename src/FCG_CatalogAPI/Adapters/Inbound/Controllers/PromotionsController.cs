@@ -1,7 +1,6 @@
 ﻿using FCG_CatalogAPI.Adapters.Inbound.Requests;
 using FCG_CatalogAPI.Adapters.Inbound.Responses;
 using FCG_CatalogAPI.Domain.Ports;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -47,7 +46,6 @@ public class PromotionsController : ControllerBase
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ProducesResponseType(typeof(PromotionResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -66,7 +64,6 @@ public class PromotionsController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
