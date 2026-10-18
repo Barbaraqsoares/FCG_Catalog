@@ -1,4 +1,5 @@
 using FCG_CatalogAPI.Infrastructure.Configuration;
+using FCG_CatalogAPI.Infrastructure.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Aplica as migrations para inicializar o banco de dados com a tabela de games pré -populada.
+await app.MigrateAndSeedAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
