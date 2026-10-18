@@ -41,6 +41,8 @@ public static class DependencyInjection
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IPromotionRepository, PromotionRepository>();
 
+       ConfigMasstransit(services, configuration);
+
         return services;
     }
 
@@ -138,16 +140,22 @@ public static class DependencyInjection
         return services;
     }
 
-    public static async Task ConfigMasstransit(this IServiceCollection services)
+    public static IServiceCollection ConfigMasstransit(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit(x =>
         {
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("localhost", "/", h =>
+                // Permite configurar o host via configuração se disponível, com fallback para localhost
+                var host = configuration["RabbitMq:Host"] ?? "localhost";
+                var virtualHost = configuration["RabbitMq:VirtualHost"] ?? "/";
+                var username = configuration["RabbitMq:Username"] ?? "guest";
+                var password = configuration["RabbitMq:Password"] ?? "guest";
+
+                cfg.Host(host, virtualHost, h =>
                 {
-                    h.Username("guest");
-                    h.Password("guest");
+                    h.Username(username); //guest
+                    h.Password(password); //guest
                 });
             });
         });
