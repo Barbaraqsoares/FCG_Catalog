@@ -131,6 +131,11 @@ public static class DependencyInjection
                 });
 
                 cfg.ConfigureEndpoints(context);
+
+                cfg.ReceiveEndpoint("payment-processed-queue", e =>
+                {
+                    e.ConfigureConsumer<PaymentProcessedConsumer>(context);
+                });
             });
         });
 
