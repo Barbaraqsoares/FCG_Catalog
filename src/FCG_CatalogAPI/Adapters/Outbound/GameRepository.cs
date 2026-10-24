@@ -51,4 +51,12 @@ public class GameRepository : IGameRepository
     {
         return await _context.Games.Where(game => ids.Contains(game.Id)).ToListAsync();
     }
+
+    public async Task<decimal> GetPriceByIdAsync(int gameId)
+    {
+        return await _context.Games
+            .Where(game => game.Id == gameId)
+            .Select(game => game.Price)
+            .FirstOrDefaultAsync();
+    }
 }

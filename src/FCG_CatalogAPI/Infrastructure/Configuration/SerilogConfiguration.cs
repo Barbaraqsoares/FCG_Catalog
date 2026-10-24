@@ -19,7 +19,7 @@ public static class SerilogConfiguration
                 // "Now listening on: http://localhost:5022".
                 .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .Enrich.WithProperty("Application", "TechChallenge")
+                .Enrich.WithProperty("Application", "FCG_CatalogAPI")
                 .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName);
 
             if (context.HostingEnvironment.IsDevelopment())

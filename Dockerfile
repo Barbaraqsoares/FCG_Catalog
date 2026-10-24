@@ -16,6 +16,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 
+# Variáveis de ambiente para execução dentro do container
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
 # A partir do .NET 8 a imagem do ASP.NET escuta na 8080, e não mais na 80 — o
 # container roda como usuário sem privilégio, que não pode abrir portas abaixo de 1024.
 EXPOSE 8080

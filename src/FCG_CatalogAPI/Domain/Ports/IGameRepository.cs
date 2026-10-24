@@ -11,4 +11,5 @@ public interface IGameRepository
     Task UpdateAsync(Game game);
     Task DeleteAsync(Game game);
     Task<List<Game>> GetByIdsAsync(IEnumerable<int> ids);
+    Task<decimal> GetPriceByIdAsync(int gameId);
 }

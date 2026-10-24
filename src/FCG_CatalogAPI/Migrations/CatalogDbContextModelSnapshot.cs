@@ -24,55 +24,119 @@ namespace FCG_CatalogAPI.Migrations
 
             modelBuilder.Entity("FCG_CatalogAPI.Domain.Entities.Game", b =>
                 {
-                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-                    b.Property<DateTime>("CreatedAt").HasColumnType("datetime2");
-                    b.Property<string>("Description").HasColumnType("nvarchar(max)");
-                    b.Property<bool>("IsActive").HasColumnType("bit");
-                    b.Property<bool>("IsMultiplayer").HasColumnType("bit");
-                    b.Property<string>("Name").IsRequired().HasColumnType("nvarchar(max)");
-                    b.Property<decimal>("Price").HasColumnType("decimal(18,2)");
-                    b.Property<DateTime?>("UpdatedAt").HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMultiplayer")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
                     b.ToTable("Games");
                 });
 
             modelBuilder.Entity("FCG_CatalogAPI.Domain.Entities.Promotion", b =>
                 {
-                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-                    b.Property<DateTime>("CreatedAt").HasColumnType("datetime2");
-                    b.Property<int>("CreatedByUserId").HasColumnType("int");
-                    b.Property<decimal>("Discount").HasColumnType("decimal(18,2)");
-                    b.Property<DateTime>("EndDate").HasColumnType("datetime2");
-                    b.Property<bool>("IsActive").HasColumnType("bit");
-                    b.Property<string>("Name").IsRequired().HasColumnType("nvarchar(max)");
-                    b.Property<DateTime>("StartDate").HasColumnType("datetime2");
-                    b.Property<DateTime?>("UpdatedAt").HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
                     b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("FCG_CatalogAPI.Domain.Entities.UserGame", b =>
                 {
-                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-                    b.Property<DateTime>("CreatedAt").HasColumnType("datetime2");
-                    b.Property<int>("GameId").HasColumnType("int");
-                    b.Property<DateTime>("PurchasedAt").HasColumnType("datetime2");
-                    b.Property<DateTime?>("UpdatedAt").HasColumnType("datetime2");
-                    b.Property<int>("UserId").HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PurchasedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
                     b.HasIndex("GameId");
+
                     b.ToTable("UserGames");
                 });
 
             modelBuilder.Entity("GamePromotion", b =>
                 {
-                    b.Property<int>("GamesId").HasColumnType("int");
-                    b.Property<int>("PromotionsId").HasColumnType("int");
+                    b.Property<int>("GamesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PromotionsId")
+                        .HasColumnType("int");
+
                     b.HasKey("GamesId", "PromotionsId");
+
                     b.HasIndex("PromotionsId");
+
                     b.ToTable("GamePromotion");
                 });
 

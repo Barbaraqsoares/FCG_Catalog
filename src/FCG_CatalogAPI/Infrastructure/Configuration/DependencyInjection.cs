@@ -1,4 +1,5 @@
-﻿using FCG_CatalogAPI.Adapters.Outbound;
+using FCG_CatalogAPI.Adapters.Inbound.Consumers;
+using FCG_CatalogAPI.Adapters.Outbound;
 using FCG_CatalogAPI.Application.UseCases;
 using FCG_CatalogAPI.Domain.Ports;
 using FCG_CatalogAPI.Infrastructure.SqlServer;
@@ -6,6 +7,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace FCG_CatalogAPI.Infrastructure.Configuration;
 
@@ -21,8 +23,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Tenta obter connection string nomeada "SqlConnection" ou fallback para "DefaultConnection"
-        var connectionString = configuration.GetConnectionString("SqlConnection")
-            ?? configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration["ConnectionStrings:SqlConnection"]
+            ?? configuration["ConnectionStrings:DefaultConnection"];
+
 
         services.AddDbContext<CatalogDbContext>(options =>
         {
@@ -41,10 +44,6 @@ public static class DependencyInjection
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IPromotionRepository, PromotionRepository>();
         services.AddScoped<IUserGameRepository, UserGameRepository>();
-
-        // ConfigMasstransit(services, configuration);
-        // MassTransit registration temporarily disabled to avoid startup failures during
-        // dependency/version reconciliation. Re-enable after aligning MassTransit/RabbitMQ packages.
 
         return services;
     }
@@ -102,14 +101,21 @@ public static class DependencyInjection
                     Email = "contato@desafio.com"
                 }
             });
+
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            swagger.IncludeXmlComments(xmlPath);
         });
+
         return services;
     }
 
-    public static IServiceCollection ConfigMasstransit(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigMassTransit(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit(x =>
         {
+            x.SetKebabCaseEndpointNameFormatter();
+            x.AddConsumer<PaymentProcessedConsumer>();
             x.UsingRabbitMq((context, cfg) =>
             {
                 // Permite configurar o host via configuração se disponível, com fallback para localhost
@@ -123,10 +129,13 @@ public static class DependencyInjection
                     h.Username(username); //guest
                     h.Password(password); //guest
                 });
+
+                cfg.ConfigureEndpoints(context);
             });
         });
-        // Se você quiser usar o MassTransit Hosted Service para iniciar e parar o bus automaticamente
-        services.AddMassTransitHostedService();
+
+        services.AddScoped<IEventPublisher, RabbitMqEventPublisher>();
+
         return services;
     }
 }

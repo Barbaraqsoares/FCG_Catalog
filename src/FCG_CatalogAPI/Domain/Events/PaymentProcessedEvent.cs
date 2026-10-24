@@ -1,3 +1,10 @@
 ﻿namespace FCG_CatalogAPI.Domain.Events;
 
-public class PaymentProcessedEvent(int UserId, int GameId, string Status);
+public record PaymentProcessedEvent(
+    Guid OrderId,
+    int UserId,
+    int GameId,
+    decimal Price,
+    string Status,
+    DateTime ProcessedAtUtc,
+    string? Reason);

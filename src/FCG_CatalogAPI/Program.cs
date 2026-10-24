@@ -15,6 +15,7 @@ try
     builder.Host.UseSerilogLogging();
 
     // Registrar serviços e documentação usando métodos centralizados
+    builder.Services.ConfigMassTransit(builder.Configuration);
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddSwaggerDocumentation();
 
