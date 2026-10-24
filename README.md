@@ -36,15 +36,17 @@ da tecnologia de mensageria.
 1. A API recebe uma requisição no controller e delega a operação ao use case.
 2. O use case aplica as regras da operação e usa os repositórios para consultar
    ou persistir dados no SQL Server.
-3. Ao adicionar um jogo à biblioteca (`POST /api/LibraryOfGames/{gameId}`), a
-   aplicação publica um `OrderPlacedCommand` no RabbitMQ usando MassTransit.
-   Também consome `PaymentProcessedEvent`: quando `Status` é `Approved`, o
-   `UserGameUseCase` registra o jogo para o `UserId` do evento, usando
+3. Ao solicitar a compra de um jogo (`POST /api/LibraryOfGames/{gameId}`), a
+   aplicação publica um `OrderPlacedCommand` no RabbitMQ usando MassTransit,
+   contendo `UserId`, `GameId` e `Price`. Essa solicitação não adiciona o jogo à
+   biblioteca. A API consome `PaymentProcessedEvent` e somente quando `Status`
+   é `Approved` registra o jogo para o `UserId` do evento, usando
    `ProcessedAtUtc` como data da compra. Outros status são ignorados e eventos
    aprovados repetidos não duplicam uma entrada já existente.
 4. Na inicialização, a API aplica as migrations do Entity Framework Core e
-   insere dados iniciais de jogos e biblioteca quando as tabelas correspondentes
-   estão vazias. Se a preparação do banco falhar, a aplicação não inicia.
+   insere jogos de exemplo se o catálogo estiver vazio. A biblioteca não recebe
+   dados de seed: suas entradas são criadas somente após pagamento aprovado.
+   Se a preparação do banco falhar, a aplicação não inicia.
 
 O publisher (`IEventPublisher`) é um serviço interno da API, não um recurso que
 aparece no painel do RabbitMQ. A API configura um consumer para

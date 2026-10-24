@@ -21,7 +21,25 @@ public class UserGameUseCase : IUserGameUseCase
 
     public async Task<UserGameResponse> AddGameToLibraryAsync(int gameId)
     {
-        return await AddGameToLibraryAsync(1, gameId, publishOrder: true);
+        const int userId = 1;
+        var game = await _gameRepository.GetByIdAsync(gameId);
+
+        if (game == null)
+            throw new NotFoundException("Jogo não encontrado.");
+
+        var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(userId, gameId);
+        if (existingUserGame is not null)
+            throw new ConflictException("O jogo já está na biblioteca do usuário.");
+
+        var gamePrice = await _gameRepository.GetPriceByIdAsync(gameId);
+        await _eventPublisher.Publish(new OrderPlacedCommand(userId, gameId, gamePrice));
+
+        return new UserGameResponse
+        {
+            GameId = game.Id,
+            GameName = game.Name,
+            Price = game.Price
+        };
     }
 
     public async Task ProcessPaymentAsync(PaymentProcessedEvent payment)
@@ -33,48 +51,16 @@ public class UserGameUseCase : IUserGameUseCase
         if (existingUserGame is not null)
             return;
 
-        await AddGameToLibraryAsync(payment.UserId, payment.GameId, payment.ProcessedAtUtc, publishOrder: false);
-    }
-
-    private async Task<UserGameResponse> AddGameToLibraryAsync(
-        int userId,
-        int gameId,
-        DateTime? purchasedAtUtc = null,
-        bool publishOrder = true)
-    {
-        var game = await _gameRepository.GetByIdAsync(gameId);
-
+        var game = await _gameRepository.GetByIdAsync(payment.GameId);
         if (game == null)
             throw new NotFoundException("Jogo não encontrado.");
 
-        var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(userId, gameId);
-
-        if (existingUserGame != null)
-            throw new ConflictException("O jogo já está na biblioteca do usuário.");
-
-        var userGame = new UserGame
+        await _userGameRepository.AddAsync(new UserGame
         {
-            UserId = userId,
-            GameId = gameId,
-            PurchasedAt = purchasedAtUtc ?? DateTime.Now
-        };
-
-        var createdUserGame = await _userGameRepository.AddAsync(userGame);
-
-        if (publishOrder)
-        {
-            var gamePrice = await _gameRepository.GetPriceByIdAsync(gameId);
-            var orderEvent = new OrderPlacedCommand(userGame.UserId, gameId, gamePrice);
-            await _eventPublisher.Publish(orderEvent);
-        }
-
-        return new UserGameResponse
-        {
-            GameId = game.Id,
-            GameName = game.Name,
-            Price = game.Price,
-            PurchasedAt = createdUserGame.PurchasedAt
-        };
+            UserId = payment.UserId,
+            GameId = payment.GameId,
+            PurchasedAt = payment.ProcessedAtUtc
+        });
     }
 
     public async Task<List<UserGameResponse>> GetUserLibraryAsync(int userId)

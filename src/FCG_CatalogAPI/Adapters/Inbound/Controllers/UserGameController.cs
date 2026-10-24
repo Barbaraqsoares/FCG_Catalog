@@ -17,7 +17,7 @@ public class UserGameController : ControllerBase
     }
 
     /// <summary>
-    /// Adiciona um jogo à biblioteca do usuário autenticado.
+    /// Solicita a compra de um jogo para o usuário autenticado.
     /// </summary>
     [HttpPost("{gameId}")]
     [ProducesResponseType(typeof(UserGameResponse), StatusCodes.Status200OK)]

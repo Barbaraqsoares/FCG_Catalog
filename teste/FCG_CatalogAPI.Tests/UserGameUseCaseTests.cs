@@ -18,22 +18,19 @@ public class UserGameUseCaseTests
         _userGames.Object, _games.Object, _publisher.Object);
 
     [Fact]
-    public async Task AddGameToLibraryAsync_PersistsAndPublishesOrder()
+    public async Task AddGameToLibraryAsync_PublishesOrderWithoutAddingGameToLibrary()
     {
         var game = TestData.Game(3, "Game", 45m);
         _games.Setup(x => x.GetByIdAsync(3)).ReturnsAsync(game);
         _userGames.Setup(x => x.GetByUserAndGameAsync(1, 3)).ReturnsAsync((UserGame?)null);
         _games.Setup(x => x.GetPriceByIdAsync(3)).ReturnsAsync(45m);
-        _userGames.Setup(x => x.AddAsync(It.IsAny<UserGame>()))
-            .ReturnsAsync((UserGame userGame) => userGame);
-
         var result = await _useCase.AddGameToLibraryAsync(3);
 
         Assert.Equal(3, result.GameId);
         Assert.Equal("Game", result.GameName);
         Assert.Equal(45m, result.Price);
-        _userGames.Verify(x => x.AddAsync(It.Is<UserGame>(ug =>
-            ug.UserId == 1 && ug.GameId == 3)), Times.Once);
+        Assert.Null(result.PurchasedAt);
+        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>()), Times.Never);
         _publisher.Verify(x => x.Publish(It.Is<OrderPlacedCommand>(message =>
             message.UserId == 1 && message.GameId == 3 && message.Price == 45m),
             It.IsAny<CancellationToken>()), Times.Once);

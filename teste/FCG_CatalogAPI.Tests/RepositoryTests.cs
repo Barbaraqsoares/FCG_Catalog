@@ -72,23 +72,23 @@ public class RepositoryTests
     }
 
     [Fact]
-    public async Task DbInitializer_SeedsEmptyTablesAndIsIdempotent()
+    public async Task DbInitializer_SeedsGamesWithoutAddingLibraryEntries()
     {
         await using var context = TestData.CreateContext();
 
         await DbInitializer.InitialyzeCatalogAsync(context);
 
         Assert.Equal(16, context.Games.Count());
-        Assert.Equal(14, context.UserGames.Count());
+        Assert.Empty(context.UserGames);
 
         await DbInitializer.InitialyzeCatalogAsync(context);
 
         Assert.Equal(16, context.Games.Count());
-        Assert.Equal(14, context.UserGames.Count());
+        Assert.Empty(context.UserGames);
     }
 
     [Fact]
-    public async Task DbInitializer_DoesNotReplaceExistingGamesButSeedsEmptyLibrary()
+    public async Task DbInitializer_DoesNotReplaceExistingGamesOrSeedLibrary()
     {
         await using var context = TestData.CreateContext();
         await context.Games.AddAsync(TestData.Game(name: "Existing"));
@@ -97,6 +97,6 @@ public class RepositoryTests
         await DbInitializer.InitialyzeCatalogAsync(context);
 
         Assert.Equal("Existing", Assert.Single(context.Games).Name);
-        Assert.Equal(14, context.UserGames.Count());
+        Assert.Empty(context.UserGames);
     }
 }
