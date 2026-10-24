@@ -18,18 +18,19 @@ public class PromotionUseCaseTests
     public async Task CreateAsync_CreatesPromotionAndMapsGameIds()
     {
         var game = TestData.Game(4);
-        _games.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync([game]);
-        _promotions.Setup(x => x.AddAsync(It.IsAny<Domain.Entities.Promotion>()))
-            .ReturnsAsync((Domain.Entities.Promotion promotion) => promotion);
+        _games.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>(), CancellationToken.None))
+            .ReturnsAsync([game]);
+        _promotions.Setup(x => x.AddAsync(It.IsAny<Domain.Entities.Promotion>(), CancellationToken.None))
+            .ReturnsAsync((Domain.Entities.Promotion promotion, CancellationToken _) => promotion);
 
-        var result = await _useCase.CreateAsync(ValidRequest("  Summer  ", [4]), 12);
+        var result = await _useCase.CreateAsync(ValidRequest("  Summer  ", [4]), 12, CancellationToken.None);
 
         Assert.Equal("Summer", result.Name);
         Assert.Equal(10, result.Discount);
         Assert.Equal(12, result.CreatedByUserId);
         Assert.Equal([4], result.GameIds);
         _promotions.Verify(x => x.AddAsync(It.Is<Domain.Entities.Promotion>(p =>
-            p.Name == "Summer" && p.Games.Single().Id == 4)), Times.Once);
+            p.Name == "Summer" && p.Games.Single().Id == 4), CancellationToken.None), Times.Once);
     }
 
     [Theory]
@@ -49,17 +50,19 @@ public class PromotionUseCaseTests
             GameIds = [1]
         };
 
-        var exception = await Assert.ThrowsAsync<DomainException>(() => _useCase.CreateAsync(request, 1));
+        var exception = await Assert.ThrowsAsync<DomainException>(() =>
+            _useCase.CreateAsync(request, 1, CancellationToken.None));
 
         Assert.Equal(message, exception.Message);
-        _games.Verify(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>()), Times.Never);
+        _games.Verify(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
     public async Task CreateAsync_RejectsEmptyGameList()
     {
         var exception = await Assert.ThrowsAsync<DomainException>(() =>
-            _useCase.CreateAsync(ValidRequest("Promo", []), 1));
+            _useCase.CreateAsync(ValidRequest("Promo", []), 1, CancellationToken.None));
 
         Assert.Equal("Ao menos 1 game precisa ser selecionado.", exception.Message);
     }
@@ -67,10 +70,11 @@ public class PromotionUseCaseTests
     [Fact]
     public async Task CreateAsync_RejectsUnknownGameIds()
     {
-        _games.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync([]);
+        _games.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>(), CancellationToken.None))
+            .ReturnsAsync([]);
 
         var exception = await Assert.ThrowsAsync<DomainException>(() =>
-            _useCase.CreateAsync(ValidRequest("Promo", [1, 2]), 1));
+            _useCase.CreateAsync(ValidRequest("Promo", [1, 2]), 1, CancellationToken.None));
 
         Assert.Equal("Um ou mais games não foram encontrados.", exception.Message);
     }
@@ -78,11 +82,12 @@ public class PromotionUseCaseTests
     [Fact]
     public async Task CreateAsync_AllowsDuplicateIdsWhenEveryUniqueGameExists()
     {
-        _games.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync([TestData.Game(1)]);
-        _promotions.Setup(x => x.AddAsync(It.IsAny<Domain.Entities.Promotion>()))
-            .ReturnsAsync((Domain.Entities.Promotion promotion) => promotion);
+        _games.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>(), CancellationToken.None))
+            .ReturnsAsync([TestData.Game(1)]);
+        _promotions.Setup(x => x.AddAsync(It.IsAny<Domain.Entities.Promotion>(), CancellationToken.None))
+            .ReturnsAsync((Domain.Entities.Promotion promotion, CancellationToken _) => promotion);
 
-        var result = await _useCase.CreateAsync(ValidRequest("Promo", [1, 1]), 2);
+        var result = await _useCase.CreateAsync(ValidRequest("Promo", [1, 1]), 2, CancellationToken.None);
 
         Assert.Equal([1], result.GameIds);
     }
@@ -90,9 +95,10 @@ public class PromotionUseCaseTests
     [Fact]
     public async Task GetAllAsync_MapsPromotions()
     {
-        _promotions.Setup(x => x.GetAllAsync()).ReturnsAsync([TestData.Promotion(3, "P", TestData.Game(5))]);
+        _promotions.Setup(x => x.GetAllAsync(CancellationToken.None))
+            .ReturnsAsync([TestData.Promotion(3, "P", TestData.Game(5))]);
 
-        var result = (await _useCase.GetAllAsync()).Single();
+        var result = (await _useCase.GetAllAsync(CancellationToken.None)).Single();
 
         Assert.Equal(3, result.Id);
         Assert.Equal("P", result.Name);
@@ -103,9 +109,10 @@ public class PromotionUseCaseTests
     [Fact]
     public async Task GetByIdAsync_ReturnsMappedPromotion()
     {
-        _promotions.Setup(x => x.GetByIdAsync(3)).ReturnsAsync(TestData.Promotion(3, "P", TestData.Game(5)));
+        _promotions.Setup(x => x.GetByIdAsync(3, CancellationToken.None))
+            .ReturnsAsync(TestData.Promotion(3, "P", TestData.Game(5)));
 
-        var result = await _useCase.GetByIdAsync(3);
+        var result = await _useCase.GetByIdAsync(3, CancellationToken.None);
 
         Assert.Equal(3, result.Id);
         Assert.Equal(new DateTime(2025, 2, 1), result.StartDate);
@@ -116,9 +123,11 @@ public class PromotionUseCaseTests
     [Fact]
     public async Task GetByIdAsync_ThrowsWhenPromotionDoesNotExist()
     {
-        _promotions.Setup(x => x.GetByIdAsync(3)).ReturnsAsync((Domain.Entities.Promotion?)null);
+        _promotions.Setup(x => x.GetByIdAsync(3, CancellationToken.None))
+            .ReturnsAsync((Domain.Entities.Promotion?)null);
 
-        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _useCase.GetByIdAsync(3));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
+            _useCase.GetByIdAsync(3, CancellationToken.None));
 
         Assert.Equal("Promoção 3 não encontrada.", exception.Message);
     }
@@ -127,21 +136,23 @@ public class PromotionUseCaseTests
     public async Task DeleteAsync_DeletesExistingPromotion()
     {
         var promotion = TestData.Promotion(8);
-        _promotions.Setup(x => x.GetByIdAsync(8)).ReturnsAsync(promotion);
+        _promotions.Setup(x => x.GetByIdAsync(8, CancellationToken.None)).ReturnsAsync(promotion);
 
-        await _useCase.DeleteAsync(8);
+        await _useCase.DeleteAsync(8, CancellationToken.None);
 
-        _promotions.Verify(x => x.DeleteAsync(promotion), Times.Once);
+        _promotions.Verify(x => x.DeleteAsync(promotion, CancellationToken.None), Times.Once);
     }
 
     [Fact]
     public async Task DeleteAsync_ThrowsWhenPromotionDoesNotExist()
     {
-        _promotions.Setup(x => x.GetByIdAsync(8)).ReturnsAsync((Domain.Entities.Promotion?)null);
+        _promotions.Setup(x => x.GetByIdAsync(8, CancellationToken.None))
+            .ReturnsAsync((Domain.Entities.Promotion?)null);
 
-        await Assert.ThrowsAsync<NotFoundException>(() => _useCase.DeleteAsync(8));
+        await Assert.ThrowsAsync<NotFoundException>(() => _useCase.DeleteAsync(8, CancellationToken.None));
 
-        _promotions.Verify(x => x.DeleteAsync(It.IsAny<Domain.Entities.Promotion>()), Times.Never);
+        _promotions.Verify(x => x.DeleteAsync(It.IsAny<Domain.Entities.Promotion>(),
+            It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static CreatePromotionRequest ValidRequest(string name, List<int> ids) => new()

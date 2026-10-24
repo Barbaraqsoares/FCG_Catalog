@@ -16,10 +16,12 @@ public class PaymentProcessedConsumerTests
             Guid.NewGuid(), 5, 8, 22m, "Approved", DateTime.UtcNow, null);
         var context = new Mock<ConsumeContext<PaymentProcessedEvent>>();
         context.SetupGet(x => x.Message).Returns(payment);
+        using var cancellation = new CancellationTokenSource();
+        context.SetupGet(x => x.CancellationToken).Returns(cancellation.Token);
         var consumer = new PaymentProcessedConsumer(useCase.Object);
 
         await consumer.Consume(context.Object);
 
-        useCase.Verify(x => x.ProcessPaymentAsync(payment), Times.Once);
+        useCase.Verify(x => x.ProcessPaymentAsync(payment, cancellation.Token), Times.Once);
     }
 }

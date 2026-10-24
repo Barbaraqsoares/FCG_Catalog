@@ -15,9 +15,10 @@ public class ControllerTests
     public async Task GameController_ReturnsListOk()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.GetAllAsync()).ReturnsAsync([new GameResponse { Name = "Game" }]);
+        useCase.Setup(x => x.GetAllAsync(CancellationToken.None))
+            .ReturnsAsync([new GameResponse { Name = "Game" }]);
 
-        var result = await new GameController(useCase.Object).GetallGames();
+        var result = await new GameController(useCase.Object).GetallGames(CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -26,9 +27,10 @@ public class ControllerTests
     public async Task GameController_ReturnsGameOk()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.GetByIdAsync(2)).ReturnsAsync(new GameResponse { Id = 2, Name = "Game" });
+        useCase.Setup(x => x.GetByIdAsync(2, CancellationToken.None))
+            .ReturnsAsync(new GameResponse { Id = 2, Name = "Game" });
 
-        var result = await new GameController(useCase.Object).GetGameById(2);
+        var result = await new GameController(useCase.Object).GetGameById(2, CancellationToken.None);
 
         Assert.Equal(2, Assert.IsType<GameResponse>(Assert.IsType<OkObjectResult>(result).Value).Id);
     }
@@ -37,10 +39,11 @@ public class ControllerTests
     public async Task GameController_CreatesGameAtExpectedRoute()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.CreateAsync(It.IsAny<CreateGameRequest>()))
+        useCase.Setup(x => x.CreateAsync(It.IsAny<CreateGameRequest>(), CancellationToken.None))
             .ReturnsAsync(new GameResponse { Id = 8, Name = "Game" });
 
-        var result = await new GameController(useCase.Object).Create(new CreateGameRequest { Name = "Game" });
+        var result = await new GameController(useCase.Object)
+            .Create(new CreateGameRequest { Name = "Game" }, CancellationToken.None);
 
         var created = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(nameof(GameController.GetGameById), created.ActionName);
@@ -51,11 +54,11 @@ public class ControllerTests
     public async Task GameController_UpdatesGameOk()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.UpdateAsync(2, It.IsAny<UpdateGameRequest>()))
+        useCase.Setup(x => x.UpdateAsync(2, It.IsAny<UpdateGameRequest>(), CancellationToken.None))
             .ReturnsAsync(new GameResponse { Id = 2, Name = "Updated" });
 
         var result = await new GameController(useCase.Object).UpdateGame(2,
-            new UpdateGameRequest { Name = "Updated" });
+            new UpdateGameRequest { Name = "Updated" }, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -65,19 +68,19 @@ public class ControllerTests
     {
         var useCase = new Mock<IGameUseCase>();
 
-        var result = await new GameController(useCase.Object).DeleteGame(2);
+        var result = await new GameController(useCase.Object).DeleteGame(2, CancellationToken.None);
 
         Assert.IsType<NoContentResult>(result);
-        useCase.Verify(x => x.DeleteAsync(2), Times.Once);
+        useCase.Verify(x => x.DeleteAsync(2, CancellationToken.None), Times.Once);
     }
 
     [Fact]
     public async Task PromotionsController_ReturnsAllOk()
     {
         var useCase = new Mock<IPromotionUseCase>();
-        useCase.Setup(x => x.GetAllAsync()).ReturnsAsync([]);
+        useCase.Setup(x => x.GetAllAsync(CancellationToken.None)).ReturnsAsync([]);
 
-        var result = await new PromotionsController(useCase.Object).GetAll();
+        var result = await new PromotionsController(useCase.Object).GetAll(CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -86,9 +89,10 @@ public class ControllerTests
     public async Task PromotionsController_ReturnsPromotionOk()
     {
         var useCase = new Mock<IPromotionUseCase>();
-        useCase.Setup(x => x.GetByIdAsync(4)).ReturnsAsync(new PromotionResponse { Id = 4, Name = "Sale" });
+        useCase.Setup(x => x.GetByIdAsync(4, CancellationToken.None))
+            .ReturnsAsync(new PromotionResponse { Id = 4, Name = "Sale" });
 
-        var result = await new PromotionsController(useCase.Object).GetById(4);
+        var result = await new PromotionsController(useCase.Object).GetById(4, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -97,16 +101,17 @@ public class ControllerTests
     public async Task PromotionsController_CreatesPromotionWithAuthenticatedUser()
     {
         var useCase = new Mock<IPromotionUseCase>();
-        useCase.Setup(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12))
+        useCase.Setup(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12, CancellationToken.None))
             .ReturnsAsync(new PromotionResponse { Id = 2, Name = "Sale" });
         var controller = new PromotionsController(useCase.Object);
         SetUser(controller, new Claim(ClaimTypes.NameIdentifier, "12"));
 
-        var result = await controller.Create(new CreatePromotionRequest { Name = "Sale" });
+        var result = await controller.Create(new CreatePromotionRequest { Name = "Sale" }, CancellationToken.None);
 
         var created = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(nameof(PromotionsController.GetById), created.ActionName);
-        useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12), Times.Once);
+        useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12, CancellationToken.None),
+            Times.Once);
     }
 
     [Theory]
@@ -119,9 +124,10 @@ public class ControllerTests
         SetUser(controller, userId is null ? null : new Claim(ClaimTypes.NameIdentifier, userId));
 
         await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
-            controller.Create(new CreatePromotionRequest { Name = "Sale" }));
+            controller.Create(new CreatePromotionRequest { Name = "Sale" }, CancellationToken.None));
 
-        useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), It.IsAny<int>()), Times.Never);
+        useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), It.IsAny<int>(),
+            It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -129,35 +135,36 @@ public class ControllerTests
     {
         var useCase = new Mock<IPromotionUseCase>();
 
-        var result = await new PromotionsController(useCase.Object).Delete(3);
+        var result = await new PromotionsController(useCase.Object).Delete(3, CancellationToken.None);
 
         Assert.IsType<NoContentResult>(result);
-        useCase.Verify(x => x.DeleteAsync(3), Times.Once);
+        useCase.Verify(x => x.DeleteAsync(3, CancellationToken.None), Times.Once);
     }
 
     [Fact]
     public async Task UserGameController_AddsGameToLibraryOk()
     {
         var useCase = new Mock<IUserGameUseCase>();
-        useCase.Setup(x => x.AddGameToLibraryAsync(7))
+        useCase.Setup(x => x.AddGameToLibraryAsync(7, 1, CancellationToken.None))
             .ReturnsAsync(new UserGameResponse { GameId = 7, GameName = "Game" });
 
-        var result = await new UserGameController(useCase.Object).AddGameToLibrary(7);
+        var result = await new UserGameController(useCase.Object)
+            .AddGameToLibrary(7, 1, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
-        useCase.Verify(x => x.AddGameToLibraryAsync(7), Times.Once);
+        useCase.Verify(x => x.AddGameToLibraryAsync(7, 1, CancellationToken.None), Times.Once);
     }
 
     [Fact]
     public async Task UserGameController_ReturnsLibraryOk()
     {
         var useCase = new Mock<IUserGameUseCase>();
-        useCase.Setup(x => x.GetUserLibraryAsync(5)).ReturnsAsync([]);
+        useCase.Setup(x => x.GetUserLibraryAsync(5, CancellationToken.None)).ReturnsAsync([]);
 
-        var result = await new UserGameController(useCase.Object).GetUserLibrary(5);
+        var result = await new UserGameController(useCase.Object).GetUserLibrary(5, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
-        useCase.Verify(x => x.GetUserLibraryAsync(5), Times.Once);
+        useCase.Verify(x => x.GetUserLibraryAsync(5, CancellationToken.None), Times.Once);
     }
 
     private static void SetUser(ControllerBase controller, Claim? claim)

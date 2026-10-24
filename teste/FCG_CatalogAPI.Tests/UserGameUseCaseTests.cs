@@ -21,16 +21,17 @@ public class UserGameUseCaseTests
     public async Task AddGameToLibraryAsync_PublishesOrderWithoutAddingGameToLibrary()
     {
         var game = TestData.Game(3, "Game", 45m);
-        _games.Setup(x => x.GetByIdAsync(3)).ReturnsAsync(game);
-        _userGames.Setup(x => x.GetByUserAndGameAsync(1, 3)).ReturnsAsync((UserGame?)null);
-        _games.Setup(x => x.GetPriceByIdAsync(3)).ReturnsAsync(45m);
-        var result = await _useCase.AddGameToLibraryAsync(3);
+        _games.Setup(x => x.GetByIdAsync(3, CancellationToken.None)).ReturnsAsync(game);
+        _userGames.Setup(x => x.GetByUserAndGameAsync(1, 3, CancellationToken.None))
+            .ReturnsAsync((UserGame?)null);
+        _games.Setup(x => x.GetPriceByIdAsync(3, CancellationToken.None)).ReturnsAsync(45m);
+        var result = await _useCase.AddGameToLibraryAsync(3, 1, CancellationToken.None);
 
         Assert.Equal(3, result.GameId);
         Assert.Equal("Game", result.GameName);
         Assert.Equal(45m, result.Price);
         Assert.Null(result.PurchasedAt);
-        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>()), Times.Never);
+        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>(), It.IsAny<CancellationToken>()), Times.Never);
         _publisher.Verify(x => x.Publish(It.Is<OrderPlacedCommand>(message =>
             message.UserId == 1 && message.GameId == 3 && message.Price == 45m),
             It.IsAny<CancellationToken>()), Times.Once);
@@ -39,13 +40,13 @@ public class UserGameUseCaseTests
     [Fact]
     public async Task AddGameToLibraryAsync_ThrowsWhenGameDoesNotExist()
     {
-        _games.Setup(x => x.GetByIdAsync(404)).ReturnsAsync((Game?)null);
+        _games.Setup(x => x.GetByIdAsync(404, CancellationToken.None)).ReturnsAsync((Game?)null);
 
         var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
-            _useCase.AddGameToLibraryAsync(404));
+            _useCase.AddGameToLibraryAsync(404, 1, CancellationToken.None));
 
         Assert.Equal("Jogo não encontrado.", exception.Message);
-        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>()), Times.Never);
+        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>(), It.IsAny<CancellationToken>()), Times.Never);
         _publisher.Verify(x => x.Publish(It.IsAny<OrderPlacedCommand>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -53,14 +54,15 @@ public class UserGameUseCaseTests
     [Fact]
     public async Task AddGameToLibraryAsync_ThrowsWhenGameIsAlreadyInLibrary()
     {
-        _games.Setup(x => x.GetByIdAsync(4)).ReturnsAsync(TestData.Game(4));
-        _userGames.Setup(x => x.GetByUserAndGameAsync(1, 4)).ReturnsAsync(new UserGame());
+        _games.Setup(x => x.GetByIdAsync(4, CancellationToken.None)).ReturnsAsync(TestData.Game(4));
+        _userGames.Setup(x => x.GetByUserAndGameAsync(1, 4, CancellationToken.None))
+            .ReturnsAsync(new UserGame());
 
         var exception = await Assert.ThrowsAsync<ConflictException>(() =>
-            _useCase.AddGameToLibraryAsync(4));
+            _useCase.AddGameToLibraryAsync(4, 1, CancellationToken.None));
 
         Assert.Equal("O jogo já está na biblioteca do usuário.", exception.Message);
-        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>()), Times.Never);
+        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -69,15 +71,17 @@ public class UserGameUseCaseTests
         var processedAt = new DateTime(2025, 4, 3, 2, 1, 0, DateTimeKind.Utc);
         var game = TestData.Game(3, "Game", 45m);
         var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, 45m, "Approved", processedAt, null);
-        _userGames.Setup(x => x.GetByUserAndGameAsync(17, 3)).ReturnsAsync((UserGame?)null);
-        _games.Setup(x => x.GetByIdAsync(3)).ReturnsAsync(game);
-        _userGames.Setup(x => x.AddAsync(It.IsAny<UserGame>()))
-            .ReturnsAsync((UserGame userGame) => userGame);
+        _userGames.Setup(x => x.GetByUserAndGameAsync(17, 3, CancellationToken.None))
+            .ReturnsAsync((UserGame?)null);
+        _games.Setup(x => x.GetByIdAsync(3, CancellationToken.None)).ReturnsAsync(game);
+        _userGames.Setup(x => x.AddAsync(It.IsAny<UserGame>(), CancellationToken.None))
+            .ReturnsAsync((UserGame userGame, CancellationToken _) => userGame);
 
-        await _useCase.ProcessPaymentAsync(payment);
+        await _useCase.ProcessPaymentAsync(payment, CancellationToken.None);
 
         _userGames.Verify(x => x.AddAsync(It.Is<UserGame>(entry =>
-            entry.UserId == 17 && entry.GameId == 3 && entry.PurchasedAt == processedAt)), Times.Once);
+            entry.UserId == 17 && entry.GameId == 3 && entry.PurchasedAt == processedAt),
+            CancellationToken.None), Times.Once);
         _publisher.Verify(x => x.Publish(It.IsAny<OrderPlacedCommand>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -90,10 +94,11 @@ public class UserGameUseCaseTests
     {
         var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, 45m, status, DateTime.UtcNow, "reason");
 
-        await _useCase.ProcessPaymentAsync(payment);
+        await _useCase.ProcessPaymentAsync(payment, CancellationToken.None);
 
-        _userGames.Verify(x => x.GetByUserAndGameAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>()), Times.Never);
+        _userGames.Verify(x => x.GetByUserAndGameAsync(It.IsAny<int>(), It.IsAny<int>(),
+            It.IsAny<CancellationToken>()), Times.Never);
+        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>(), It.IsAny<CancellationToken>()), Times.Never);
         _publisher.Verify(x => x.Publish(It.IsAny<OrderPlacedCommand>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -102,11 +107,12 @@ public class UserGameUseCaseTests
     public async Task ProcessPaymentAsync_ApprovedPaymentIsIdempotentForExistingLibraryEntry()
     {
         var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, 45m, "Approved", DateTime.UtcNow, null);
-        _userGames.Setup(x => x.GetByUserAndGameAsync(17, 3)).ReturnsAsync(new UserGame());
+        _userGames.Setup(x => x.GetByUserAndGameAsync(17, 3, CancellationToken.None))
+            .ReturnsAsync(new UserGame());
 
-        await _useCase.ProcessPaymentAsync(payment);
+        await _useCase.ProcessPaymentAsync(payment, CancellationToken.None);
 
-        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>()), Times.Never);
+        _userGames.Verify(x => x.AddAsync(It.IsAny<UserGame>(), It.IsAny<CancellationToken>()), Times.Never);
         _publisher.Verify(x => x.Publish(It.IsAny<OrderPlacedCommand>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -116,13 +122,13 @@ public class UserGameUseCaseTests
     {
         var first = TestData.Game(1, "First", 12m);
         var second = TestData.Game(2, "Second", 24m);
-        _userGames.Setup(x => x.GetByUserIdAsync(5)).ReturnsAsync(
+        _userGames.Setup(x => x.GetByUserIdAsync(5, CancellationToken.None)).ReturnsAsync(
         [
             new UserGame { UserId = 5, GameId = 1, Game = first, PurchasedAt = new DateTime(2025, 3, 1) },
             new UserGame { UserId = 5, GameId = 2, Game = second, PurchasedAt = new DateTime(2025, 3, 2) }
         ]);
 
-        var result = await _useCase.GetUserLibraryAsync(5);
+        var result = await _useCase.GetUserLibraryAsync(5, CancellationToken.None);
 
         Assert.Collection(result,
             item =>

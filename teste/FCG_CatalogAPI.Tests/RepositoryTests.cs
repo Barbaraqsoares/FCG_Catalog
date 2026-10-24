@@ -11,22 +11,23 @@ public class RepositoryTests
     {
         await using var context = TestData.CreateContext();
         var repository = new GameRepository(context);
-        var game = await repository.AddAsync(TestData.Game(name: "Added", price: 17m));
+        var game = await repository.AddAsync(TestData.Game(name: "Added", price: 17m), CancellationToken.None);
 
         Assert.True(game.Id > 0);
-        Assert.Equal("Added", Assert.Single(await repository.GetAllAsync()).Name);
-        Assert.Equal(game.Id, (await repository.GetByIdAsync(game.Id))!.Id);
-        Assert.Equal([game.Id], (await repository.GetByIdsAsync([game.Id, 900])).Select(x => x.Id));
-        Assert.Equal(17m, await repository.GetPriceByIdAsync(game.Id));
-        Assert.Equal(0m, await repository.GetPriceByIdAsync(900));
+        Assert.Equal("Added", Assert.Single(await repository.GetAllAsync(CancellationToken.None)).Name);
+        Assert.Equal(game.Id, (await repository.GetByIdAsync(game.Id, CancellationToken.None))!.Id);
+        Assert.Equal([game.Id], (await repository.GetByIdsAsync([game.Id, 900], CancellationToken.None))
+            .Select(x => x.Id));
+        Assert.Equal(17m, await repository.GetPriceByIdAsync(game.Id, CancellationToken.None));
+        Assert.Equal(0m, await repository.GetPriceByIdAsync(900, CancellationToken.None));
 
         game.Name = "Updated";
-        await repository.UpdateAsync(game);
-        Assert.Equal("Updated", (await repository.GetByIdAsync(game.Id))!.Name);
+        await repository.UpdateAsync(game, CancellationToken.None);
+        Assert.Equal("Updated", (await repository.GetByIdAsync(game.Id, CancellationToken.None))!.Name);
 
-        await repository.DeleteAsync(game);
-        Assert.Empty(await repository.GetAllAsync());
-        Assert.Null(await repository.GetByIdAsync(game.Id));
+        await repository.DeleteAsync(game, CancellationToken.None);
+        Assert.Empty(await repository.GetAllAsync(CancellationToken.None));
+        Assert.Null(await repository.GetByIdAsync(game.Id, CancellationToken.None));
     }
 
     [Fact]
@@ -39,17 +40,18 @@ public class RepositoryTests
         await context.SaveChangesAsync();
 
         var promotion = TestData.Promotion(name: "Added", games: [game]);
-        await repository.AddAsync(promotion);
-        Assert.Equal("Added", Assert.Single(await repository.GetAllAsync()).Name);
-        Assert.Equal(game.Id, (await repository.GetByIdAsync(promotion.Id))!.Games.Single().Id);
+        await repository.AddAsync(promotion, CancellationToken.None);
+        Assert.Equal("Added", Assert.Single(await repository.GetAllAsync(CancellationToken.None)).Name);
+        Assert.Equal(game.Id, (await repository.GetByIdAsync(promotion.Id, CancellationToken.None))!
+            .Games.Single().Id);
 
         promotion.Name = "Updated";
-        await repository.UpdateAsync(promotion);
-        Assert.Equal("Updated", (await repository.GetByIdAsync(promotion.Id))!.Name);
+        await repository.UpdateAsync(promotion, CancellationToken.None);
+        Assert.Equal("Updated", (await repository.GetByIdAsync(promotion.Id, CancellationToken.None))!.Name);
 
-        await repository.DeleteAsync(promotion);
-        Assert.Empty(await repository.GetAllAsync());
-        Assert.Null(await repository.GetByIdAsync(promotion.Id));
+        await repository.DeleteAsync(promotion, CancellationToken.None);
+        Assert.Empty(await repository.GetAllAsync(CancellationToken.None));
+        Assert.Null(await repository.GetByIdAsync(promotion.Id, CancellationToken.None));
     }
 
     [Fact]
@@ -61,14 +63,14 @@ public class RepositoryTests
         await context.Games.AddAsync(game);
         await context.SaveChangesAsync();
 
-        var entry = await repository.AddAsync(new UserGame { UserId = 1, GameId = game.Id });
+        var entry = await repository.AddAsync(new UserGame { UserId = 1, GameId = game.Id }, CancellationToken.None);
 
         Assert.True(entry.Id > 0);
-        Assert.NotNull(await repository.GetByUserAndGameAsync(1, game.Id));
-        Assert.Null(await repository.GetByUserAndGameAsync(2, game.Id));
-        Assert.Null(await repository.GetByUserAndGameAsync(1, 999));
-        Assert.Single(await repository.GetByUserIdAsync(1));
-        Assert.Empty(await repository.GetByUserIdAsync(2));
+        Assert.NotNull(await repository.GetByUserAndGameAsync(1, game.Id, CancellationToken.None));
+        Assert.Null(await repository.GetByUserAndGameAsync(2, game.Id, CancellationToken.None));
+        Assert.Null(await repository.GetByUserAndGameAsync(1, 999, CancellationToken.None));
+        Assert.Single(await repository.GetByUserIdAsync(1, CancellationToken.None));
+        Assert.Empty(await repository.GetByUserIdAsync(2, CancellationToken.None));
     }
 
     [Fact]
