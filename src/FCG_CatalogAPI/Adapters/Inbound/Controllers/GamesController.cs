@@ -19,12 +19,13 @@ public class GameController : ControllerBase
     /// <summary>
     /// Retorna todos os games disponíveis.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<GameResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetallGames()
+    public async Task<IActionResult> GetallGames(CancellationToken cancellationToken)
     {
-        var games = await _gameUseCase.GetAllAsync();
+        var games = await _gameUseCase.GetAllAsync(cancellationToken);
 
         return Ok(games);
     }
@@ -33,25 +34,27 @@ public class GameController : ControllerBase
     /// Retorna um game específico pelo ID.
     /// </summary>
     /// <param name="id">Identificador do game.</param>
+    /// <param name="cancellationToken"></param>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetGameById(int id)
+    public async Task<IActionResult> GetGameById(int id, CancellationToken cancellationToken)
     {
-        return Ok(await _gameUseCase.GetByIdAsync(id));
+        return Ok(await _gameUseCase.GetByIdAsync(id, cancellationToken));
     }
 
     /// <summary>
     /// Cria um novo game (apenas para administradores).
     /// </summary>
     /// <param name="request">Nome, descrição, preço e se é multiplayer.</param>
+    /// <param name="cancellationToken"></param>
     [HttpPost]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Create([FromBody] CreateGameRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateGameRequest request, CancellationToken cancellationToken)
     {
-        var createdGame = await _gameUseCase.CreateAsync(request);
+        var createdGame = await _gameUseCase.CreateAsync(request, cancellationToken);
 
         return CreatedAtAction(nameof(GetGameById), new { id = createdGame.Id }, createdGame);
     }
@@ -61,25 +64,27 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="id">Identificador do game.</param>
     /// <param name="request">Dados do game, incluindo se continua ativo no catálogo.</param>
+    /// <param name="cancellationToken"></param>
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateGame(int id, [FromBody] UpdateGameRequest request)
+    public async Task<IActionResult> UpdateGame(int id, [FromBody] UpdateGameRequest request, CancellationToken cancellationToken)
     {
-        return Ok(await _gameUseCase.UpdateAsync(id, request));
+        return Ok(await _gameUseCase.UpdateAsync(id, request, cancellationToken));
     }
 
     /// <summary>
     /// Deleta um game existente pelo ID (apenas para administradores).
     /// </summary>
     /// <param name="id">Identificador do game.</param>
+    /// <param name="cancellationToken"></param>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteGame(int id)
+    public async Task<IActionResult> DeleteGame(int id, CancellationToken cancellationToken)
     {
-        await _gameUseCase.DeleteAsync(id);
+        await _gameUseCase.DeleteAsync(id, cancellationToken);
 
         return NoContent();
     }

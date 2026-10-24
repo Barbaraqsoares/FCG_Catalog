@@ -14,22 +14,22 @@ public class GameUseCase : IGameUseCase
         _gameRepository = gameRepository;
     }
 
-    public async Task<IEnumerable<GameResponse>> GetAllAsync()
+    public async Task<IEnumerable<GameResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var games = await _gameRepository.GetAllAsync();
+        var games = await _gameRepository.GetAllAsync(cancellationToken);
 
         return games.Select(MapToResponse);
     }
 
-    public async Task<GameResponse> GetByIdAsync(int id)
+    public async Task<GameResponse> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var game = await _gameRepository.GetByIdAsync(id)
+        var game = await _gameRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException($"Jogo {id} não encontrado.");
 
         return MapToResponse(game);
     }
 
-    public async Task<GameResponse> CreateAsync(CreateGameRequest request)
+    public async Task<GameResponse> CreateAsync(CreateGameRequest request, CancellationToken cancellationToken)
     {
         ValidateGame(request.Name, request.Price);
 
@@ -44,14 +44,14 @@ public class GameUseCase : IGameUseCase
             UpdatedAt = DateTime.Now
         };
 
-        var createdGame = await _gameRepository.AddAsync(game);
+        var createdGame = await _gameRepository.AddAsync(game, cancellationToken);
 
         return MapToResponse(createdGame);
     }
 
-    public async Task<GameResponse> UpdateAsync(int id, UpdateGameRequest request)
+    public async Task<GameResponse> UpdateAsync(int id, UpdateGameRequest request, CancellationToken cancellationToken)
     {
-        var existingGame = await _gameRepository.GetByIdAsync(id)
+        var existingGame = await _gameRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException($"Jogo {id} não encontrado.");
 
         ValidateGame(request.Name, request.Price);
@@ -63,17 +63,17 @@ public class GameUseCase : IGameUseCase
         existingGame.IsActive = request.IsActive;
         existingGame.UpdatedAt = DateTime.Now;
 
-        await _gameRepository.UpdateAsync(existingGame);
+        await _gameRepository.UpdateAsync(existingGame, cancellationToken);
 
         return MapToResponse(existingGame);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var game = await _gameRepository.GetByIdAsync(id)
+        var game = await _gameRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException($"Jogo {id} não encontrado.");
 
-        await _gameRepository.DeleteAsync(game);
+        await _gameRepository.DeleteAsync(game, cancellationToken);
     }
 
     private static void ValidateGame(string name, decimal price)

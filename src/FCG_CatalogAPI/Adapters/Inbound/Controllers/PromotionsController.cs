@@ -21,9 +21,9 @@ public class PromotionsController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var promotions = await _promotionUseCase.GetAllAsync();
+        var promotions = await _promotionUseCase.GetAllAsync(cancellationToken);
 
         return Ok(promotions);
     }
@@ -32,29 +32,31 @@ public class PromotionsController : ControllerBase
     /// Consulta uma promoção específica pelo ID
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(PromotionResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
-        return Ok(await _promotionUseCase.GetByIdAsync(id));
+        return Ok(await _promotionUseCase.GetByIdAsync(id, cancellationToken));
     }
 
     /// <summary>
     /// Cadastra uma nova promoção (apenas para administradores)
     /// </summary>
     /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(typeof(PromotionResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Create([FromBody] CreatePromotionRequest request)
+    public async Task<IActionResult> Create([FromBody] CreatePromotionRequest request, CancellationToken cancellationToken)
     {
         var adminUserId = GetAuthenticatedUserId();
 
-        var promotion = await _promotionUseCase.CreateAsync(request, adminUserId);
+        var promotion = await _promotionUseCase.CreateAsync(request, adminUserId, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id = promotion.Id }, promotion);
     }
@@ -63,13 +65,14 @@ public class PromotionsController : ControllerBase
     /// Deleta uma promoção pelo ID (apenas para administradores)
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await _promotionUseCase.DeleteAsync(id);
+        await _promotionUseCase.DeleteAsync(id, cancellationToken);
 
         return NoContent();
     }

@@ -14,18 +14,18 @@ public class GameRepository : IGameRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Game>> GetAllAsync()
+    public async Task<IEnumerable<Game>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Games.ToListAsync();
     }
 
-    public async Task<Game?> GetByIdAsync(int id)
+    public async Task<Game?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await _context.Games
             .FirstOrDefaultAsync(game => game.Id == id);
     }
 
-    public async Task<Game> AddAsync(Game game)
+    public async Task<Game> AddAsync(Game game, CancellationToken cancellationToken)
     {
         await _context.Games.AddAsync(game);
 
@@ -34,25 +34,25 @@ public class GameRepository : IGameRepository
         return game;
     }
 
-    public async Task UpdateAsync(Game game)
+    public async Task UpdateAsync(Game game, CancellationToken cancellationToken)
     {
         _context.Games.Update(game);
 
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Game game)
+    public async Task DeleteAsync(Game game, CancellationToken cancellationToken)
     {
         _context.Games.Remove(game);
 
         await _context.SaveChangesAsync();
     }
-    public async Task<List<Game>> GetByIdsAsync(IEnumerable<int> ids)
+    public async Task<List<Game>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken)
     {
         return await _context.Games.Where(game => ids.Contains(game.Id)).ToListAsync();
     }
 
-    public async Task<decimal> GetPriceByIdAsync(int gameId)
+    public async Task<decimal> GetPriceByIdAsync(int gameId, CancellationToken cancellationToken)
     {
         return await _context.Games
             .Where(game => game.Id == gameId)

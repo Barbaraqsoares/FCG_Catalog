@@ -19,9 +19,9 @@ public class UserGameUseCase : IUserGameUseCase
         _eventPublisher = eventPublisher;
     }
 
-    public async Task<UserGameResponse> AddGameToLibraryAsync(int gameId)
+    public async Task<UserGameResponse> AddGameToLibraryAsync(int gameId, int userId, CancellationToken cancellationToken)
     {
-        const int userId = 1;
+        userId = 1; // Hardcoded userId for demonstration purposes
         var game = await _gameRepository.GetByIdAsync(gameId);
 
         if (game == null)
@@ -32,6 +32,7 @@ public class UserGameUseCase : IUserGameUseCase
             throw new ConflictException("O jogo já está na biblioteca do usuário.");
 
         var gamePrice = await _gameRepository.GetPriceByIdAsync(gameId);
+
         await _eventPublisher.Publish(new OrderPlacedCommand(userId, gameId, gamePrice));
 
         return new UserGameResponse
@@ -42,7 +43,7 @@ public class UserGameUseCase : IUserGameUseCase
         };
     }
 
-    public async Task ProcessPaymentAsync(PaymentProcessedEvent payment)
+    public async Task ProcessPaymentAsync(PaymentProcessedEvent payment, CancellationToken cancellationToken)
     {
         if (!string.Equals(payment.Status, "Approved", StringComparison.OrdinalIgnoreCase))
             return;
@@ -63,7 +64,7 @@ public class UserGameUseCase : IUserGameUseCase
         });
     }
 
-    public async Task<List<UserGameResponse>> GetUserLibraryAsync(int userId)
+    public async Task<List<UserGameResponse>> GetUserLibraryAsync(int userId, CancellationToken cancellationToken)
     {
         var userGames = await _userGameRepository.GetByUserIdAsync(userId);
 

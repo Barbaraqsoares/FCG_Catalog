@@ -5,11 +5,11 @@ namespace FCG_CatalogAPI.Domain.Ports;
 
 public interface IGameRepository
 {
-    Task<IEnumerable<Game>> GetAllAsync();
-    Task<Game?> GetByIdAsync(int id);
-    Task<Game> AddAsync(Game game);
-    Task UpdateAsync(Game game);
-    Task DeleteAsync(Game game);
-    Task<List<Game>> GetByIdsAsync(IEnumerable<int> ids);
-    Task<decimal> GetPriceByIdAsync(int gameId);
+    Task<IEnumerable<Game>> GetAllAsync(CancellationToken cancellationToken);
+    Task<Game?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<Game> AddAsync(Game game, CancellationToken cancellationToken);
+    Task UpdateAsync(Game game, CancellationToken cancellationToken);
+    Task DeleteAsync(Game game, CancellationToken cancellationToken);
+    Task<List<Game>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken);
+    Task<decimal> GetPriceByIdAsync(int gameId, CancellationToken cancellationToken);
 }

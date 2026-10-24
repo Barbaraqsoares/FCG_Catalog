@@ -24,9 +24,9 @@ public class UserGameController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddGameToLibrary(int gameId)
+    public async Task<IActionResult> AddGameToLibrary(int gameId, int userId, CancellationToken cancellationToken)
     {
-        var userGame = await _userGameUseCase.AddGameToLibraryAsync(gameId);
+        var userGame = await _userGameUseCase.AddGameToLibraryAsync(gameId, userId, cancellationToken);
 
         return Ok(userGame);
     }
@@ -38,9 +38,9 @@ public class UserGameController : ControllerBase
     [ProducesResponseType(typeof(List<UserGameResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUserLibrary(int userId)
+    public async Task<IActionResult> GetUserLibrary(int userId, CancellationToken cancellationToken)
     {
-        var library = await _userGameUseCase.GetUserLibraryAsync(userId);
+        var library = await _userGameUseCase.GetUserLibraryAsync(userId, cancellationToken);
 
         return Ok(library);
     }

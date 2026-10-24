@@ -31,11 +31,11 @@ public class PromotionUseCase : IPromotionUseCase
             throw new DomainException("Ao menos 1 game precisa ser selecionado.");
     }
 
-    public async Task<PromotionResponse> CreateAsync(CreatePromotionRequest request, int adminUserId)
+    public async Task<PromotionResponse> CreateAsync(CreatePromotionRequest request, int adminUserId, CancellationToken cancellationToken)
     {
         ValidatePromotion(request);
 
-        var games = await _gameRepository.GetByIdsAsync(request.GameIds);
+        var games = await _gameRepository.GetByIdsAsync(request.GameIds, cancellationToken);
 
         if (games.Count != request.GameIds.Distinct().Count())
             throw new DomainException("Um ou mais games não foram encontrados.");
@@ -53,7 +53,7 @@ public class PromotionUseCase : IPromotionUseCase
             Games = games
         };
 
-        var createdPromotion = await _promotionRepository.AddAsync(promotion);
+        var createdPromotion = await _promotionRepository.AddAsync(promotion, cancellationToken);
 
         return MapToResponse(createdPromotion);
     }
@@ -75,26 +75,26 @@ public class PromotionUseCase : IPromotionUseCase
         };
     }
 
-    public async Task<IEnumerable<PromotionResponse>> GetAllAsync()
+    public async Task<IEnumerable<PromotionResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var promotions = await _promotionRepository.GetAllAsync();
+        var promotions = await _promotionRepository.GetAllAsync(cancellationToken);
 
         return promotions.Select(MapToResponse);
     }
 
-    public async Task<PromotionResponse> GetByIdAsync(int id)
+    public async Task<PromotionResponse> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var promotion = await _promotionRepository.GetByIdAsync(id)
+        var promotion = await _promotionRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException($"Promoção {id} não encontrada.");
 
         return MapToResponse(promotion);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var promotion = await _promotionRepository.GetByIdAsync(id)
+        var promotion = await _promotionRepository.GetByIdAsync(id, cancellationToken)
             ?? throw new NotFoundException($"Promoção {id} não encontrada.");
 
-        await _promotionRepository.DeleteAsync(promotion);
+        await _promotionRepository.DeleteAsync(promotion, cancellationToken);
     }
 }
