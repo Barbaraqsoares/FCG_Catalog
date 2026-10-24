@@ -22,16 +22,16 @@ public class UserGameUseCase : IUserGameUseCase
     public async Task<UserGameResponse> AddGameToLibraryAsync(int gameId, int userId, CancellationToken cancellationToken)
     {
         userId = 1; // Hardcoded userId for demonstration purposes
-        var game = await _gameRepository.GetByIdAsync(gameId);
+        var game = await _gameRepository.GetByIdAsync(gameId, cancellationToken);
 
         if (game == null)
             throw new NotFoundException("Jogo não encontrado.");
 
-        var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(userId, gameId);
+        var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(userId, gameId, cancellationToken);
         if (existingUserGame is not null)
             throw new ConflictException("O jogo já está na biblioteca do usuário.");
 
-        var gamePrice = await _gameRepository.GetPriceByIdAsync(gameId);
+        var gamePrice = await _gameRepository.GetPriceByIdAsync(gameId, cancellationToken);
 
         await _eventPublisher.Publish(new OrderPlacedCommand(userId, gameId, gamePrice));
 
@@ -48,11 +48,11 @@ public class UserGameUseCase : IUserGameUseCase
         if (!string.Equals(payment.Status, "Approved", StringComparison.OrdinalIgnoreCase))
             return;
 
-        var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(payment.UserId, payment.GameId);
+        var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(payment.UserId, payment.GameId, cancellationToken);
         if (existingUserGame is not null)
             return;
 
-        var game = await _gameRepository.GetByIdAsync(payment.GameId);
+        var game = await _gameRepository.GetByIdAsync(payment.GameId, cancellationToken);
         if (game == null)
             throw new NotFoundException("Jogo não encontrado.");
 
@@ -61,12 +61,12 @@ public class UserGameUseCase : IUserGameUseCase
             UserId = payment.UserId,
             GameId = payment.GameId,
             PurchasedAt = payment.ProcessedAtUtc
-        });
+        }, cancellationToken);
     }
 
     public async Task<List<UserGameResponse>> GetUserLibraryAsync(int userId, CancellationToken cancellationToken)
     {
-        var userGames = await _userGameRepository.GetByUserIdAsync(userId);
+        var userGames = await _userGameRepository.GetByUserIdAsync(userId, cancellationToken);
 
         return userGames.Select(userGame => new UserGameResponse()
         {

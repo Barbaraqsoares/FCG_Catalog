@@ -15,6 +15,6 @@ public sealed class PaymentProcessedConsumer : IConsumer<PaymentProcessedEvent>
 
     public Task Consume(ConsumeContext<PaymentProcessedEvent> context)
     {
-        return _userGameUseCase.ProcessPaymentAsync(context.Message);
+        return _userGameUseCase.ProcessPaymentAsync(context.Message, context.CancellationToken);
     }
 }
