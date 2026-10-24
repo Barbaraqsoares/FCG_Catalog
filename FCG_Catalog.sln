@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.11.12306.390 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FCG_CatalogAPI", "src\FCG_CatalogAPI\FCG_CatalogAPI.csproj", "{84DC12EC-498B-43CB-9F27-5A4EA73B10F1}"
 EndProject
@@ -50,6 +50,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{84DC12EC-498B-43CB-9F27-5A4EA73B10F1} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{0D58EC2E-5797-4905-A66F-559973BF0558} = {53EED3F4-6845-88EE-D1E4-C46DF9C11E15}
 	EndGlobalSection
 EndGlobal

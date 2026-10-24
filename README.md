@@ -63,6 +63,11 @@ deve consumi-lo.
   - `5208`: API local (perfil HTTP).
   - `8080`: API no Docker Compose.
 
+Ao iniciar pelo Docker Compose, o Swagger fica disponível em
+`http://localhost:8080/swagger`. No Visual Studio, use o perfil
+`Container (Dockerfile)` para abrir essa mesma URL automaticamente; o perfil
+usa HTTP e publica a porta 8080 do host para a porta 8080 do container.
+
 ## Configuração
 
 ### SQL Server
