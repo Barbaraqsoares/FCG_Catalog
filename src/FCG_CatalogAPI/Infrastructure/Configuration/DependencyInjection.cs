@@ -132,10 +132,7 @@ public static class DependencyInjection
                     h.Password(password); //guest
                 });
 
-                cfg.Message<PaymentProcessedEvent>(m =>
-                {
-                    m.SetEntityName("PaymentPublisher:PaymentProcessedEvent");
-                });
+                cfg.UseRawJsonSerializer();
 
                 cfg.ReceiveEndpoint("payment-processed-queue", e =>
                 {
