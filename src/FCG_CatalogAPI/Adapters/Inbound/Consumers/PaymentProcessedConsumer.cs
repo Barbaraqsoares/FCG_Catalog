@@ -1,6 +1,7 @@
 using FCG_CatalogAPI.Domain.Events;
 using FCG_CatalogAPI.Domain.Ports;
 using MassTransit;
+using System.Runtime.CompilerServices;
 
 namespace FCG_CatalogAPI.Adapters.Inbound.Consumers;
 
@@ -13,8 +14,9 @@ public sealed class PaymentProcessedConsumer : IConsumer<PaymentProcessedEvent>
         _userGameUseCase = userGameUseCase;
     }
 
-    public Task Consume(ConsumeContext<PaymentProcessedEvent> context)
+    public async Task Consume(ConsumeContext<PaymentProcessedEvent> context)
     {
-        return _userGameUseCase.ProcessPaymentAsync(context.Message, context.CancellationToken);
+        var message = context.Message;
+        await _userGameUseCase.ProcessPaymentAsync(message, context.CancellationToken);
     }
 }

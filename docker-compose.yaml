@@ -54,5 +54,14 @@ services:
     # de novo em vez de deixar o serviço fora do ar.
     restart: on-failure:3
 
+  publisher:
+      build: ../PaymentPublisher   # caminho relativo até o projeto do publisher
+      depends_on:
+        - rabbitmq
+      environment:
+        - RabbitMq__Host=rabbitmq
+        - RabbitMq__Username=guest
+        - RabbitMq__Password=guest
+
 volumes:
   sqlvolume:

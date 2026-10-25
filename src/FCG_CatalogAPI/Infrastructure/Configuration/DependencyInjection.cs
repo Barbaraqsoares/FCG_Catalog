@@ -1,6 +1,7 @@
 using FCG_CatalogAPI.Adapters.Inbound.Consumers;
 using FCG_CatalogAPI.Adapters.Outbound;
 using FCG_CatalogAPI.Application.UseCases;
+using FCG_CatalogAPI.Domain.Events;
 using FCG_CatalogAPI.Domain.Ports;
 using FCG_CatalogAPI.Infrastructure.SqlServer;
 using MassTransit;
@@ -116,6 +117,7 @@ public static class DependencyInjection
         {
             x.SetKebabCaseEndpointNameFormatter();
             x.AddConsumer<PaymentProcessedConsumer>();
+            
             x.UsingRabbitMq((context, cfg) =>
             {
                 // Permite configurar o host via configuração se disponível, com fallback para localhost
@@ -130,11 +132,21 @@ public static class DependencyInjection
                     h.Password(password); //guest
                 });
 
-                cfg.ConfigureEndpoints(context);
+                cfg.Message<PaymentProcessedEvent>(m =>
+                {
+                    m.SetEntityName("PaymentPublisher:PaymentProcessedEvent");
+                });
 
                 cfg.ReceiveEndpoint("payment-processed-queue", e =>
                 {
+                    e.ConfigureConsumeTopology = false;
+                    // liga a fila ao exchange do publisher
+                    e.Bind("PaymentPublisher:PaymentProcessedEvent", s => s.ExchangeType = "fanout");
+           
                     e.ConfigureConsumer<PaymentProcessedConsumer>(context);
+
+                    e.UseMessageRetry(r => r.Intervals(500, 1000, 3000));
+                    e.PrefetchCount = 8;
                 });
             });
         });
