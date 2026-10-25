@@ -16,12 +16,14 @@ public class UserGameRepository : IUserGameRepository
 
     public async Task<UserGame?> GetByUserAndGameAsync(int userId, int gameId, CancellationToken cancellationToken)
     {
-        return await _context.UserGames.FirstOrDefaultAsync(ug => ug.UserId == userId && ug.GameId == gameId);
+        var userGame = await _context.UserGames.FirstOrDefaultAsync(ug => ug.UserId == userId && ug.GameId == gameId, cancellationToken);
+        return userGame;
     }
 
     public async Task<List<UserGame>> GetByUserIdAsync(int userId, CancellationToken cancellationToken)
     {
-        return await _context.UserGames.Include(ug => ug.Game).Where(ug => ug.UserId == userId).AsNoTracking().ToListAsync();
+        var userGames = await _context.UserGames.Include(ug => ug.Game).Where(ug => ug.UserId == userId).ToListAsync(cancellationToken);
+        return userGames;
     }
 
     public async Task<UserGame> AddAsync(UserGame userGame, CancellationToken cancellationToken)

@@ -46,7 +46,7 @@ public class UserGameUseCase : IUserGameUseCase
     public async Task ProcessPaymentAsync(PaymentProcessedEvent payment, CancellationToken cancellationToken)
     {
         if (!string.Equals(payment.Status, "Approved", StringComparison.OrdinalIgnoreCase))
-            return;
+            throw new NotFoundException("Pagamento não aprovado.");
 
         var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(payment.UserId, payment.GameId, cancellationToken);
         if (existingUserGame is not null)
