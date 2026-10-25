@@ -1,7 +1,6 @@
 using FCG_CatalogAPI.Domain.Events;
 using FCG_CatalogAPI.Domain.Ports;
 using MassTransit;
-using System.Runtime.CompilerServices;
 
 namespace FCG_CatalogAPI.Adapters.Inbound.Consumers;
 

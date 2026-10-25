@@ -60,8 +60,8 @@ public class UserGameUseCase : IUserGameUseCase
         {
             UserId = payment.UserId,
             GameId = payment.GameId,
-            PurchasedAt = payment.ProcessedAtUtc
-        }, cancellationToken);
+            PurchasedAt = DateTime.Parse(payment.ProcessedAtUtc)
+        }, cancellationToken); 
     }
 
     public async Task<List<UserGameResponse>> GetUserLibraryAsync(int userId, CancellationToken cancellationToken)

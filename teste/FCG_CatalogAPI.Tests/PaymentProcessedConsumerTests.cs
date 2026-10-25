@@ -13,7 +13,7 @@ public class PaymentProcessedConsumerTests
     {
         var useCase = new Mock<IUserGameUseCase>();
         var payment = new PaymentProcessedEvent(
-            Guid.NewGuid(), 5, 8, "22.0", "Approved", DateTime.UtcNow, null);
+            Guid.NewGuid(), 5, 8, "22.0", "Approved", DateTime.UtcNow.ToString(), null);
         var context = new Mock<ConsumeContext<PaymentProcessedEvent>>();
         context.SetupGet(x => x.Message).Returns(payment);
         using var cancellation = new CancellationTokenSource();

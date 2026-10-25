@@ -18,7 +18,7 @@ public class DomainModelTests
     [Fact]
     public void PaymentProcessedEvent_StoresConstructorValues()
     {
-        var processedAt = DateTime.UtcNow;
+        var processedAt = "DateTime.UtcNow";
         var payment = new PaymentProcessedEvent(Guid.NewGuid(), 1, 2, "12.5", "Approved", processedAt, null);
 
         Assert.NotEqual(Guid.Empty, payment.OrderId);

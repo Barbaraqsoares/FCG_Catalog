@@ -137,9 +137,14 @@ public static class DependencyInjection
                 cfg.ReceiveEndpoint("payment-processed-queue", e =>
                 {
                     e.ConfigureConsumeTopology = false;
+
+                    e.UseRawJsonDeserializer(RawSerializerOptions.All);
                     // liga a fila ao exchange do publisher
                     e.Bind("PaymentPublisher:PaymentProcessedEvent", s => s.ExchangeType = "fanout");
-           
+
+                    cfg.MessageTopology.GetMessageTopology<PaymentProcessedEvent>()
+                        .SetEntityName("PaymentPublisher:PaymentProcessedEvent");
+
                     e.ConfigureConsumer<PaymentProcessedConsumer>(context);
 
                     e.UseMessageRetry(r => r.Intervals(500, 1000, 3000));

@@ -70,7 +70,7 @@ public class UserGameUseCaseTests
     {
         var processedAt = new DateTime(2025, 4, 3, 2, 1, 0, DateTimeKind.Utc);
         var game = TestData.Game(3, "Game", 45m);
-        var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, "45.0", "Approved", processedAt, null);
+        var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, "45.0", "Approved", processedAt.ToString(), null);
         _userGames.Setup(x => x.GetByUserAndGameAsync(17, 3, CancellationToken.None))
             .ReturnsAsync((UserGame?)null);
         _games.Setup(x => x.GetByIdAsync(3, CancellationToken.None)).ReturnsAsync(game);
@@ -92,7 +92,7 @@ public class UserGameUseCaseTests
     [InlineData("")]
     public async Task ProcessPaymentAsync_NonApprovedPaymentDoesNotChangeLibrary(string status)
     {
-        var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, "45.0", status, DateTime.UtcNow, "reason");
+        var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, "45.0", status, DateTime.UtcNow.ToString(), "reason");
 
         await _useCase.ProcessPaymentAsync(payment, CancellationToken.None);
 
@@ -106,7 +106,7 @@ public class UserGameUseCaseTests
     [Fact]
     public async Task ProcessPaymentAsync_ApprovedPaymentIsIdempotentForExistingLibraryEntry()
     {
-        var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, "45.0", "Approved", DateTime.UtcNow, null);
+        var payment = new PaymentProcessedEvent(Guid.NewGuid(), 17, 3, "45.0", "Approved", DateTime.UtcNow.ToString(), null);
         _userGames.Setup(x => x.GetByUserAndGameAsync(17, 3, CancellationToken.None))
             .ReturnsAsync(new UserGame());
 
