@@ -180,6 +180,44 @@ Os dados do SQL Server ficam no volume `sqlvolume` e são mantidos entre
 reinicializações. Para uma execução local de desenvolvimento, não use as senhas
 de exemplo deste README em um ambiente exposto.
 
+### Kubernetes
+
+Os manifests ficam em [`k8s/`](./k8s/) e criam Deployments e Services para a API,
+SQL Server e RabbitMQ. O SQL Server usa um PersistentVolumeClaim; configurações
+não sensíveis ficam no ConfigMap e as credenciais são lidas de um Secret.
+
+Antes de aplicar, substitua os valores `CHANGE_ME_...` em
+[`k8s/01-secret.yaml`](./k8s/01-secret.yaml) por senhas fortes. A senha do SQL
+Server configurada ali é usada tanto no container do banco quanto na connection
+string da API. Não use os valores de exemplo em ambientes compartilhados ou de
+produção; para esses ambientes, forneça o Secret por um gerenciador seguro e não
+armazene credenciais reais no repositório.
+
+Na raiz do repositório, construa a imagem da API e aplique os manifests:
+
+```powershell
+docker build -t fcg-catalog-api:latest .
+kubectl apply -f k8s/
+```
+
+O cluster precisa conseguir acessar a imagem `fcg-catalog-api:latest`. Em
+clusters que não compartilham o daemon local do Docker, publique a imagem em um
+registry acessível e atualize `image` no Deployment em
+[`k8s/04-deployments.yaml`](./k8s/04-deployments.yaml). O provisionamento do
+PersistentVolume depende do StorageClass padrão do cluster.
+
+Consulte os Deployments com `kubectl get deployments`. Para acessar a API e o
+painel de administração do RabbitMQ localmente, execute cada comando de
+port-forward em um terminal separado:
+
+```powershell
+kubectl port-forward service/fcg-catalog-api 8080:8080
+kubectl port-forward service/rabbitmq 15672:15672
+```
+
+O Swagger fica em `http://localhost:8080/swagger`; o painel do RabbitMQ fica em
+`http://localhost:15672`, usando as credenciais definidas no Secret.
+
 ## Endpoints
 
 O Swagger UI documenta os endpoints quando a API está em execução.

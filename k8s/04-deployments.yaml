@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver
+  template:
+    metadata:
+      labels:
+        app: sqlserver
+    spec:
+      containers:
+        - name: sqlserver
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          ports:
+            - name: sql
+              containerPort: 1433
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-catalog-secrets
+                  key: sqlserver-sa-password
+          startupProbe:
+            tcpSocket:
+              port: 1433
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: 1433
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 1433
+            periodSeconds: 20
+          volumeMounts:
+            - name: sqlserver-data
+              mountPath: /var/opt/mssql
+      volumes:
+        - name: sqlserver-data
+          persistentVolumeClaim:
+            claimName: sqlserver-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management
+          ports:
+            - name: amqp
+              containerPort: 5672
+            - name: management
+              containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-catalog-secrets
+                  key: rabbitmq-username
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-catalog-secrets
+                  key: rabbitmq-password
+          startupProbe:
+            tcpSocket:
+              port: 5672
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: 5672
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 5672
+            periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-catalog-api
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: fcg-catalog-api
+  template:
+    metadata:
+      labels:
+        app: fcg-catalog-api
+    spec:
+      containers:
+        - name: api
+          image: fcg-catalog-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SQLSERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-catalog-config
+                  key: SQLSERVER_HOST
+            - name: CATALOG_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-catalog-config
+                  key: CATALOG_DB_NAME
+            - name: SQLSERVER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-catalog-secrets
+                  key: sqlserver-sa-password
+            - name: ConnectionStrings__SqlConnection
+              value: "Server=$(SQLSERVER_HOST),1433;Database=$(CATALOG_DB_NAME);User Id=sa;Password=$(SQLSERVER_PASSWORD);TrustServerCertificate=True;"
+            - name: RabbitMq__Host
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-catalog-config
+                  key: RabbitMq__Host
+            - name: RabbitMq__VirtualHost
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-catalog-config
+                  key: RabbitMq__VirtualHost
+            - name: RabbitMq__Username
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-catalog-secrets
+                  key: rabbitmq-username
+            - name: RabbitMq__Password
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-catalog-secrets
+                  key: rabbitmq-password
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            periodSeconds: 20
