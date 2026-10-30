@@ -95,7 +95,7 @@ public static class DependencyInjection
             {
                 Title = "FGC Catalog API",
                 Version = "v1",
-                Description = "API de cadastro de usuários e biblioteca de jogos da FIAP Cloud Games.",
+                Description = "API de cadastro de jogos na biblioteca do usuário, com promoções e integração com o serviço de pagamento.",
                 Contact = new OpenApiContact
                 {
                     Name = "Equipe Desafio",
