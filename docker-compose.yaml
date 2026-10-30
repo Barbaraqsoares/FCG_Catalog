@@ -55,7 +55,6 @@ services:
     restart: on-failure:3
 
   publisher:
-      build: ../PaymentPublisher   # caminho relativo até o projeto do publisher
       depends_on:
         - rabbitmq
       environment:
