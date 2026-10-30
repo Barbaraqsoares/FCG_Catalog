@@ -93,7 +93,7 @@ public static class DependencyInjection
         {
             swagger.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Tech Challenge",
+                Title = "FGC Catalog API",
                 Version = "v1",
                 Description = "API de cadastro de usuários e biblioteca de jogos da FIAP Cloud Games.",
                 Contact = new OpenApiContact
