@@ -6,6 +6,7 @@ using FCG_CatalogAPI.Domain.Exceptions;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
@@ -17,9 +18,10 @@ public class PublisherAndMiddlewareTests
     public async Task RabbitMqEventPublisher_DelegatesMessageToMassTransit()
     {
         var endpoint = new Mock<IPublishEndpoint>();
-        var publisher = new RabbitMqEventPublisher(endpoint.Object);
+        var logger = new Mock<ILogger<OrderPlacedPublisher>>();
+        var publisher = new OrderPlacedPublisher(endpoint.Object, logger.Object);
         using var cancellation = new CancellationTokenSource();
-        var message = new OrderPlacedCommand(1, 2, 3m);
+        var message = new OrderPlacedCommand(Guid.NewGuid(), 1, 2, 3m);
 
         await publisher.Publish(message, cancellation.Token);
 

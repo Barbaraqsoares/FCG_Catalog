@@ -33,8 +33,9 @@ public class DomainModelTests
     [Fact]
     public void OrderPlacedCommand_StoresConstructorValues()
     {
-        var order = new OrderPlacedCommand(1, 2, 12.5m);
+        var order = new OrderPlacedCommand(Guid.NewGuid(), 1, 2, 12.5m);
 
+        Assert.Equal(Guid.NewGuid(), order.OrderId);
         Assert.Equal(1, order.UserId);
         Assert.Equal(2, order.GameId);
         Assert.Equal(12.5m, order.Price);

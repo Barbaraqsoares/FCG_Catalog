@@ -140,10 +140,10 @@ public static class DependencyInjection
 
                     e.UseRawJsonDeserializer(RawSerializerOptions.All);
                     // liga a fila ao exchange do publisher
-                    e.Bind("PaymentPublisher:PaymentProcessedEvent", s => s.ExchangeType = "fanout");
+                    e.Bind("FCG_PaymentsAPI:PaymentProcessedEvent", s => s.ExchangeType = "fanout");
 
                     cfg.MessageTopology.GetMessageTopology<PaymentProcessedEvent>()
-                        .SetEntityName("PaymentPublisher:PaymentProcessedEvent");
+                        .SetEntityName("FCG_PaymentsAPI:PaymentProcessedEvent");
 
                     e.ConfigureConsumer<PaymentProcessedConsumer>(context);
 
@@ -153,7 +153,7 @@ public static class DependencyInjection
             });
         });
 
-        services.AddScoped<IEventPublisher, RabbitMqEventPublisher>();
+        services.AddScoped<IEventPublisher, OrderPlacedPublisher>();
 
         return services;
     }

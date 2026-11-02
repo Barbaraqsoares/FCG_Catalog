@@ -61,6 +61,5 @@ services:
         - RabbitMq__Host=rabbitmq
         - RabbitMq__Username=guest
         - RabbitMq__Password=guest
-
 volumes:
   sqlvolume:

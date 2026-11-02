@@ -21,7 +21,6 @@ public class UserGameUseCase : IUserGameUseCase
 
     public async Task<UserGameResponse> AddGameToLibraryAsync(int gameId, int userId, CancellationToken cancellationToken)
     {
-        userId = 1; // Hardcoded userId for demonstration purposes
         var game = await _gameRepository.GetByIdAsync(gameId, cancellationToken);
 
         if (game == null)
@@ -33,7 +32,7 @@ public class UserGameUseCase : IUserGameUseCase
 
         var gamePrice = await _gameRepository.GetPriceByIdAsync(gameId, cancellationToken);
 
-        await _eventPublisher.Publish(new OrderPlacedCommand(userId, gameId, gamePrice));
+        await _eventPublisher.Publish(new OrderPlacedCommand(Guid.NewGuid(), userId, gameId, gamePrice));
 
         return new UserGameResponse
         {

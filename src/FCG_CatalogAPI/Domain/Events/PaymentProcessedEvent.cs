@@ -2,5 +2,5 @@
 
 namespace FCG_CatalogAPI.Domain.Events;
 
-[EntityName("PaymentPublisher:PaymentProcessedEvent")]
+[EntityName("FCG_PaymentsAPI:PaymentProcessedEvent")]
 public record PaymentProcessedEvent(Guid OrderId, int UserId, int GameId, string Price, string Status, string ProcessedAtUtc, string? Reason);
