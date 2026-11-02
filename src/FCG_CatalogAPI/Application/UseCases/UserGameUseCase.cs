@@ -59,7 +59,7 @@ public class UserGameUseCase : IUserGameUseCase
         {
             UserId = payment.UserId,
             GameId = payment.GameId,
-            PurchasedAt = DateTime.Parse(payment.ProcessedAtUtc)
+            PurchasedAt = payment.ProcessedAtUtc
         }, cancellationToken); 
     }
 
