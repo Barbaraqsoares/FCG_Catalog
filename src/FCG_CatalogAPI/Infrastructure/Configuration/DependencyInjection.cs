@@ -134,6 +134,10 @@ public static class DependencyInjection
 
                 cfg.UseRawJsonSerializer();
 
+                cfg.Message<FCG_CatalogAPI.Domain.Events.OrderPlacedCommand>(m => m.SetEntityName("FCG_UserApi:user-created-event"));
+
+                cfg.Message<PaymentProcessedEvent>(m => m.SetEntityName("FCG_PaymentsAPI:PaymentProcessedEvent"));
+
                 cfg.ReceiveEndpoint("payment-processed-queue", e =>
                 {
                     e.ConfigureConsumeTopology = false;
