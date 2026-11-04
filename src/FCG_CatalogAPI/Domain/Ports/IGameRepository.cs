@@ -1,5 +1,4 @@
 ﻿using FCG_CatalogAPI.Domain.Entities;
-using System;
 
 namespace FCG_CatalogAPI.Domain.Ports;
 

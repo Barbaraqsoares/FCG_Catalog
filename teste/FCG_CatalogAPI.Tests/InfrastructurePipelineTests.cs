@@ -1,6 +1,7 @@
 using FCG_CatalogAPI.Adapters.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 

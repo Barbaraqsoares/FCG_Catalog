@@ -3,6 +3,7 @@ using FCG_CatalogAPI.Application.UseCases;
 using FCG_CatalogAPI.Domain.Exceptions;
 using FCG_CatalogAPI.Domain.Ports;
 using Moq;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 
@@ -16,8 +17,7 @@ public class GameUseCaseTests
     [Fact]
     public async Task GetAllAsync_MapsAllGames()
     {
-        _repository.Setup(x => x.GetAllAsync(CancellationToken.None))
-            .ReturnsAsync([TestData.Game(), TestData.Game(2, "Second")]);
+        _repository.Setup(x => x.GetAllAsync(CancellationToken.None)).ReturnsAsync([TestData.Game(), TestData.Game(2, "Second")]);
 
         var result = (await _useCase.GetAllAsync(CancellationToken.None)).ToList();
 
@@ -49,8 +49,7 @@ public class GameUseCaseTests
         _repository.Setup(x => x.GetByIdAsync(4, CancellationToken.None))
             .ReturnsAsync((Domain.Entities.Game?)null);
 
-        var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
-            _useCase.GetByIdAsync(4, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _useCase.GetByIdAsync(4, CancellationToken.None));
 
         Assert.Equal("Jogo 4 não encontrado.", exception.Message);
     }

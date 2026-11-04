@@ -12,26 +12,15 @@ using System.Reflection;
 
 namespace FCG_CatalogAPI.Infrastructure.Configuration;
 
-/// <summary>
-/// Registra os serviços da camada de API (controllers, autenticação e Swagger).
-/// </summary>
 public static class DependencyInjection
 {
-    /// <summary>
-    /// Registra serviços de infraestrutura (DbContext, repositories, etc.).
-    /// Mantém Program.cs enxuto delegando a configuração aqui.
-    /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Tenta obter connection string nomeada "SqlConnection" ou fallback para "DefaultConnection"
-        var connectionString = configuration["ConnectionStrings:SqlConnection"]
-            ?? configuration["ConnectionStrings:DefaultConnection"];
-
+        var connectionString = configuration["ConnectionStrings:SqlConnection"] ?? configuration["ConnectionStrings:DefaultConnection"];
 
         services.AddDbContext<CatalogDbContext>(options =>
         {
-            options.UseSqlServer(
-                connectionString,
+            options.UseSqlServer(connectionString,
                 sqlOptions =>
                 {
                     sqlOptions.EnableRetryOnFailure();
@@ -131,18 +120,11 @@ public static class DependencyInjection
                     h.Username(username); //guest
                     h.Password(password); //guest
                 });
-
                 
-                cfg.UseRawJsonSerializer(
-                    RawSerializerOptions.AddTransportHeaders |
-                    RawSerializerOptions.CopyHeaders);
+                cfg.UseRawJsonSerializer(RawSerializerOptions.AddTransportHeaders | RawSerializerOptions.CopyHeaders);
 
-                cfg.Message<OrderPlacedCommand>(m =>
-                    m.SetEntityName("FCG_CatalogAPI:OrderPlacedEvent"));
-
-
+                cfg.Message<OrderPlacedCommand>(m => m.SetEntityName("FCG_CatalogAPI:OrderPlacedEvent"));
                 cfg.Message<PaymentProcessedEvent>(m => m.SetEntityName("FCG_PaymentsAPI:PaymentProcessedEvent"));
-
                 
                 cfg.ReceiveEndpoint("catalog-payment-processed-queue", e =>
                 {
@@ -150,9 +132,7 @@ public static class DependencyInjection
                     e.ConfigureConsumeTopology = false;
 
                     // Consome JSON bruto, sem exigir o mesmo namespace
-                    e.UseRawJsonDeserializer(
-                        RawSerializerOptions.All,
-                        isDefault: true);
+                    e.UseRawJsonDeserializer(RawSerializerOptions.All, isDefault: true);
 
                     // Recebe uma cópia de cada PaymentProcessedEvent
                     e.Bind("FCG_PaymentsAPI:PaymentProcessedEvent", s =>
@@ -163,8 +143,7 @@ public static class DependencyInjection
                     // Registra o consumidor responsável por liberar o jogo
                     e.ConfigureConsumer<PaymentProcessedConsumer>(context);
 
-                    e.UseMessageRetry(r =>
-                        r.Intervals(500, 1000, 3000));
+                    e.UseMessageRetry(r => r.Intervals(500, 1000, 3000));
 
                     e.PrefetchCount = 8;
                 });

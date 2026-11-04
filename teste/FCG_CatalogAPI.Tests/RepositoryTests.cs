@@ -1,6 +1,7 @@
 using FCG_CatalogAPI.Adapters.Outbound;
 using FCG_CatalogAPI.Domain.Entities;
 using FCG_CatalogAPI.Infrastructure.SqlServer;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 

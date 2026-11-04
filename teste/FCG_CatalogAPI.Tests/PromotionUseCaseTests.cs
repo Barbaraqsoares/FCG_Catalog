@@ -3,6 +3,7 @@ using FCG_CatalogAPI.Application.UseCases;
 using FCG_CatalogAPI.Domain.Exceptions;
 using FCG_CatalogAPI.Domain.Ports;
 using Moq;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 

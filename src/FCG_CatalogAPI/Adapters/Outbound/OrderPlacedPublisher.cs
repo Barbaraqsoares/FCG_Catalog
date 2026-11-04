@@ -20,11 +20,11 @@ public class OrderPlacedPublisher : IEventPublisher
         try
         {
             await _publishEndpoint.Publish(orderEvent, cancellationToken);
-            _logger.LogInformation("Evento {EventType} publicado.", typeof(OrderPlacedCommand).Name);
+            _logger.LogInformation("Evento {EventType} publicado, com o orderID {OrderId}.", typeof(OrderPlacedCommand).Name, orderEvent.OrderId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao publicar evento {EventType}.", typeof(OrderPlacedCommand).Name);
+            _logger.LogError(ex, "Erro ao publicar evento {EventType}, com o orderID {OrderId}.", typeof(OrderPlacedCommand).Name, orderEvent.OrderId);
             throw;
         }
     }

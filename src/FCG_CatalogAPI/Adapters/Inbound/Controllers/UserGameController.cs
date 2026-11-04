@@ -10,8 +10,7 @@ public class UserGameController : ControllerBase
 {
     private readonly IUserGameUseCase _userGameUseCase;
 
-    public UserGameController(
-        IUserGameUseCase userGameUseCase)
+    public UserGameController(IUserGameUseCase userGameUseCase)
     {
         _userGameUseCase = userGameUseCase;
     }

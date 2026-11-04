@@ -10,8 +10,8 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
     {
         builder.ToTable("Promotions")
            .HasMany(promotion => promotion.Games)
-        .WithMany(game => game.Promotions)
-        .UsingEntity(join => join.ToTable("GamePromotions"));
+           .WithMany(game => game.Promotions)
+           .UsingEntity(join => join.ToTable("GamePromotions"));
 
         builder.Property(p => p.Id).HasColumnType("int").UseIdentityColumn();
         builder.Property(p => p.Name).IsRequired().HasColumnType("nvarchar(100)");

@@ -6,6 +6,7 @@ using FCG_CatalogAPI.Domain.Ports;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 
@@ -15,8 +16,8 @@ public class ControllerTests
     public async Task GameController_ReturnsListOk()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.GetAllAsync(CancellationToken.None))
-            .ReturnsAsync([new GameResponse { Name = "Game" }]);
+
+        useCase.Setup(x => x.GetAllAsync(CancellationToken.None)).ReturnsAsync([new GameResponse { Name = "Game" }]);
 
         var result = await new GameController(useCase.Object).GetallGames(CancellationToken.None);
 
@@ -27,8 +28,8 @@ public class ControllerTests
     public async Task GameController_ReturnsGameOk()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.GetByIdAsync(2, CancellationToken.None))
-            .ReturnsAsync(new GameResponse { Id = 2, Name = "Game" });
+
+        useCase.Setup(x => x.GetByIdAsync(2, CancellationToken.None)).ReturnsAsync(new GameResponse { Id = 2, Name = "Game" });
 
         var result = await new GameController(useCase.Object).GetGameById(2, CancellationToken.None);
 
@@ -39,13 +40,13 @@ public class ControllerTests
     public async Task GameController_CreatesGameAtExpectedRoute()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.CreateAsync(It.IsAny<CreateGameRequest>(), CancellationToken.None))
-            .ReturnsAsync(new GameResponse { Id = 8, Name = "Game" });
 
-        var result = await new GameController(useCase.Object)
-            .Create(new CreateGameRequest { Name = "Game" }, CancellationToken.None);
+        useCase.Setup(x => x.CreateAsync(It.IsAny<CreateGameRequest>(), CancellationToken.None)).ReturnsAsync(new GameResponse { Id = 8, Name = "Game" });
+
+        var result = await new GameController(useCase.Object).Create(new CreateGameRequest { Name = "Game" }, CancellationToken.None);
 
         var created = Assert.IsType<CreatedAtActionResult>(result);
+
         Assert.Equal(nameof(GameController.GetGameById), created.ActionName);
         Assert.Equal(8, created.RouteValues!["id"]);
     }
@@ -54,11 +55,10 @@ public class ControllerTests
     public async Task GameController_UpdatesGameOk()
     {
         var useCase = new Mock<IGameUseCase>();
-        useCase.Setup(x => x.UpdateAsync(2, It.IsAny<UpdateGameRequest>(), CancellationToken.None))
-            .ReturnsAsync(new GameResponse { Id = 2, Name = "Updated" });
 
-        var result = await new GameController(useCase.Object).UpdateGame(2,
-            new UpdateGameRequest { Name = "Updated" }, CancellationToken.None);
+        useCase.Setup(x => x.UpdateAsync(2, It.IsAny<UpdateGameRequest>(), CancellationToken.None)).ReturnsAsync(new GameResponse { Id = 2, Name = "Updated" });
+
+        var result = await new GameController(useCase.Object).UpdateGame(2, new UpdateGameRequest { Name = "Updated" }, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -89,8 +89,7 @@ public class ControllerTests
     public async Task PromotionsController_ReturnsPromotionOk()
     {
         var useCase = new Mock<IPromotionUseCase>();
-        useCase.Setup(x => x.GetByIdAsync(4, CancellationToken.None))
-            .ReturnsAsync(new PromotionResponse { Id = 4, Name = "Sale" });
+        useCase.Setup(x => x.GetByIdAsync(4, CancellationToken.None)).ReturnsAsync(new PromotionResponse { Id = 4, Name = "Sale" });
 
         var result = await new PromotionsController(useCase.Object).GetById(4, CancellationToken.None);
 
@@ -101,14 +100,17 @@ public class ControllerTests
     public async Task PromotionsController_CreatesPromotionWithAuthenticatedUser()
     {
         var useCase = new Mock<IPromotionUseCase>();
-        useCase.Setup(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12, CancellationToken.None))
-            .ReturnsAsync(new PromotionResponse { Id = 2, Name = "Sale" });
+
+        useCase.Setup(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12, CancellationToken.None)).ReturnsAsync(new PromotionResponse { Id = 2, Name = "Sale" });
+
         var controller = new PromotionsController(useCase.Object);
+
         SetUser(controller, new Claim(ClaimTypes.NameIdentifier, "12"));
 
         var result = await controller.Create(new CreatePromotionRequest { Name = "Sale" }, CancellationToken.None);
 
         var created = Assert.IsType<CreatedAtActionResult>(result);
+
         Assert.Equal(nameof(PromotionsController.GetById), created.ActionName);
         useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), 12, CancellationToken.None),
             Times.Once);
@@ -123,11 +125,9 @@ public class ControllerTests
         var controller = new PromotionsController(useCase.Object);
         SetUser(controller, userId is null ? null : new Claim(ClaimTypes.NameIdentifier, userId));
 
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
-            controller.Create(new CreatePromotionRequest { Name = "Sale" }, CancellationToken.None));
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => controller.Create(new CreatePromotionRequest { Name = "Sale" }, CancellationToken.None));
 
-        useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), It.IsAny<int>(),
-            It.IsAny<CancellationToken>()), Times.Never);
+        useCase.Verify(x => x.CreateAsync(It.IsAny<CreatePromotionRequest>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -145,11 +145,9 @@ public class ControllerTests
     public async Task UserGameController_AddsGameToLibraryOk()
     {
         var useCase = new Mock<IUserGameUseCase>();
-        useCase.Setup(x => x.AddGameToLibraryAsync(7, 1, CancellationToken.None))
-            .ReturnsAsync(new UserGameResponse { GameId = 7, GameName = "Game" });
+        useCase.Setup(x => x.AddGameToLibraryAsync(7, 1, CancellationToken.None)).ReturnsAsync(new UserGameResponse { GameId = 7, GameName = "Game" });
 
-        var result = await new UserGameController(useCase.Object)
-            .AddGameToLibrary(7, 1, CancellationToken.None);
+        var result = await new UserGameController(useCase.Object).AddGameToLibrary(7, 1, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result);
         useCase.Verify(x => x.AddGameToLibraryAsync(7, 1, CancellationToken.None), Times.Once);
@@ -169,9 +167,7 @@ public class ControllerTests
 
     private static void SetUser(ControllerBase controller, Claim? claim)
     {
-        var identity = claim is null
-            ? new ClaimsIdentity()
-            : new ClaimsIdentity([claim], "test");
+        var identity = claim is null ? new ClaimsIdentity() : new ClaimsIdentity([claim], "test");
         controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }

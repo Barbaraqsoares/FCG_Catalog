@@ -69,9 +69,7 @@ public class PromotionUseCase : IPromotionUseCase
             IsActive = promotion.IsActive,
             CreatedByUserId = promotion.CreatedByUserId,
             CreatedAt = promotion.CreatedAt,
-            GameIds = promotion.Games
-                .Select(game => game.Id)
-                .ToList()
+            GameIds = promotion.Games.Select(game => game.Id).ToList()
         };
     }
 

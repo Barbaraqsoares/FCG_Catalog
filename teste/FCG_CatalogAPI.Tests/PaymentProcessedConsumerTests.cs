@@ -4,6 +4,7 @@ using FCG_CatalogAPI.Domain.Ports;
 using MassTransit;
 using Moq;
 using Microsoft.Extensions.Logging;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 

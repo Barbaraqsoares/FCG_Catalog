@@ -1,5 +1,6 @@
 using FCG_CatalogAPI.Domain.Entities;
 using FCG_CatalogAPI.Domain.Events;
+using Xunit;
 
 namespace FCG_CatalogAPI.Tests;
 
