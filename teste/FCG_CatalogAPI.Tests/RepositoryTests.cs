@@ -81,12 +81,12 @@ public class RepositoryTests
         await DbInitializer.InitialyzeCatalogAsync(context);
 
         Assert.Equal(16, context.Games.Count());
-        Assert.Empty(context.UserGames);
+        Assert.Equal(14, context.UserGames.Count());
 
         await DbInitializer.InitialyzeCatalogAsync(context);
 
         Assert.Equal(16, context.Games.Count());
-        Assert.Empty(context.UserGames);
+        Assert.Equal(14, context.UserGames.Count());
     }
 
     [Fact]
@@ -99,6 +99,6 @@ public class RepositoryTests
         await DbInitializer.InitialyzeCatalogAsync(context);
 
         Assert.Equal("Existing", Assert.Single(context.Games).Name);
-        Assert.Empty(context.UserGames);
+        Assert.Equal(14, context.UserGames.Count());
     }
 }

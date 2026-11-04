@@ -132,26 +132,40 @@ public static class DependencyInjection
                     h.Password(password); //guest
                 });
 
-                cfg.UseRawJsonSerializer();
+                
+                cfg.UseRawJsonSerializer(
+                    RawSerializerOptions.AddTransportHeaders |
+                    RawSerializerOptions.CopyHeaders);
 
-                cfg.Message<FCG_CatalogAPI.Domain.Events.OrderPlacedCommand>(m => m.SetEntityName("FCG_UserApi:user-created-event"));
+                cfg.Message<OrderPlacedCommand>(m =>
+                    m.SetEntityName("FCG_CatalogAPI:OrderPlacedEvent"));
+
 
                 cfg.Message<PaymentProcessedEvent>(m => m.SetEntityName("FCG_PaymentsAPI:PaymentProcessedEvent"));
 
-                cfg.ReceiveEndpoint("payment-processed-queue", e =>
+                
+                cfg.ReceiveEndpoint("catalog-payment-processed-queue", e =>
                 {
+                    // A fila será ligada manualmente à exchange do PaymentsAPI
                     e.ConfigureConsumeTopology = false;
 
-                    e.UseRawJsonDeserializer(RawSerializerOptions.All);
-                    // liga a fila ao exchange do publisher
-                    e.Bind("FCG_PaymentsAPI:PaymentProcessedEvent", s => s.ExchangeType = "fanout");
+                    // Consome JSON bruto, sem exigir o mesmo namespace
+                    e.UseRawJsonDeserializer(
+                        RawSerializerOptions.All,
+                        isDefault: true);
 
-                    cfg.MessageTopology.GetMessageTopology<PaymentProcessedEvent>()
-                        .SetEntityName("FCG_PaymentsAPI:PaymentProcessedEvent");
+                    // Recebe uma cópia de cada PaymentProcessedEvent
+                    e.Bind("FCG_PaymentsAPI:PaymentProcessedEvent", s =>
+                    {
+                        s.ExchangeType = "fanout";
+                    });
 
+                    // Registra o consumidor responsável por liberar o jogo
                     e.ConfigureConsumer<PaymentProcessedConsumer>(context);
 
-                    e.UseMessageRetry(r => r.Intervals(500, 1000, 3000));
+                    e.UseMessageRetry(r =>
+                        r.Intervals(500, 1000, 3000));
+
                     e.PrefetchCount = 8;
                 });
             });

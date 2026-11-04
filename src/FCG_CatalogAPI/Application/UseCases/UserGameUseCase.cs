@@ -1,4 +1,4 @@
-﻿using FCG_CatalogAPI.Adapters.Inbound.Responses;
+using FCG_CatalogAPI.Adapters.Inbound.Responses;
 using FCG_CatalogAPI.Domain.Entities;
 using FCG_CatalogAPI.Domain.Events;
 using FCG_CatalogAPI.Domain.Exceptions;
@@ -45,7 +45,7 @@ public class UserGameUseCase : IUserGameUseCase
     public async Task ProcessPaymentAsync(PaymentProcessedEvent payment, CancellationToken cancellationToken)
     {
         if (!string.Equals(payment.Status, "Approved", StringComparison.OrdinalIgnoreCase))
-            throw new NotFoundException("Pagamento não aprovado.");
+            return;
 
         var existingUserGame = await _userGameRepository.GetByUserAndGameAsync(payment.UserId, payment.GameId, cancellationToken);
         if (existingUserGame is not null)

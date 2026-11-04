@@ -1,4 +1,4 @@
-﻿using FCG_CatalogAPI.Domain.Entities;
+using FCG_CatalogAPI.Domain.Entities;
 
 namespace FCG_CatalogAPI.Infrastructure.SqlServer;
 
