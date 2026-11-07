@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title description">
+  <title id="title">Arquitetura do FCG Catalog</title>
+  <desc id="description">Diagrama da arquitetura hexagonal da API FCG Catalog, seus fluxos de compra e pagamento, integrações com SQL Server e RabbitMQ e a separação da infraestrutura no repositório de orquestração.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#edf3fb"/>
+    </linearGradient>
+    <linearGradient id="heading" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#10233f"/>
+      <stop offset="1" stop-color="#173d61"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#46627f"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#17836f"/>
+    </marker>
+    <style>
+      text { font-family: "Segoe UI", Arial, sans-serif; fill: #18304c; }
+      .title { font-size: 38px; font-weight: 700; fill: #fff; }
+      .subtitle { font-size: 17px; fill: #d7e6f4; }
+      .section { font-size: 19px; font-weight: 700; }
+      .card-title { font-size: 18px; font-weight: 700; }
+      .body { font-size: 15px; }
+      .small { font-size: 13px; fill: #52677e; }
+      .arrow-label { font-size: 12px; font-weight: 600; fill: #52677e; }
+      .module { fill: #fff; stroke: #cbd8e6; stroke-width: 1.5; }
+      .chip { font-size: 13px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1080" fill="url(#background)"/>
+  <rect x="0" y="0" width="1600" height="130" fill="url(#heading)"/>
+  <text x="54" y="61" class="title">FCG Catalog | Arquitetura</text>
+  <text x="56" y="94" class="subtitle">API REST em .NET 8 • Arquitetura hexagonal (Ports and Adapters)</text>
+  <rect x="1370" y="42" width="175" height="42" rx="21" fill="#244f70"/>
+  <text x="1457" y="69" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">VISÃO DO PROJETO</text>
+
+  <rect x="40" y="155" width="1110" height="515" rx="20" fill="#f3f8fd" stroke="#9db4ca" stroke-width="2" stroke-dasharray="9 7"/>
+  <rect x="64" y="140" width="310" height="34" rx="17" fill="#e1edf8"/>
+  <text x="82" y="163" class="section">FCG Catalog API</text>
+  <text x="271" y="162" class="small">código deste repositório</text>
+
+  <rect x="1180" y="155" width="380" height="515" rx="20" fill="#f7f5ff" stroke="#b8add8" stroke-width="2" stroke-dasharray="9 7"/>
+  <rect x="1204" y="140" width="250" height="34" rx="17" fill="#ebe5fa"/>
+  <text x="1222" y="163" class="section">Serviços integrados</text>
+
+  <rect x="70" y="245" width="220" height="270" rx="15" class="module"/>
+  <rect x="70" y="245" width="220" height="48" rx="15" fill="#dff4ef"/>
+  <path d="M70 278 H290 V293 H70 Z" fill="#dff4ef"/>
+  <text x="90" y="276" class="card-title">Adapters / Inbound</text>
+  <text x="90" y="329" class="body" font-weight="700">HTTP</text>
+  <text x="90" y="354" class="body">GamesController</text>
+  <text x="90" y="377" class="body">PromotionsController</text>
+  <text x="90" y="400" class="body">UserGameController</text>
+  <line x1="90" y1="419" x2="270" y2="419" stroke="#e0e8f0"/>
+  <text x="90" y="447" class="body" font-weight="700">Mensageria</text>
+  <text x="90" y="472" class="body">PaymentProcessedConsumer</text>
+  <text x="90" y="497" class="small">Recebe eventos de pagamento</text>
+
+  <rect x="340" y="245" width="220" height="270" rx="15" class="module"/>
+  <rect x="340" y="245" width="220" height="48" rx="15" fill="#e7e8ff"/>
+  <path d="M340 278 H560 V293 H340 Z" fill="#e7e8ff"/>
+  <text x="360" y="276" class="card-title">Application</text>
+  <text x="360" y="329" class="body" font-weight="700">Use cases</text>
+  <text x="360" y="359" class="body">GameUseCase</text>
+  <text x="360" y="386" class="body">PromotionUseCase</text>
+  <text x="360" y="413" class="body">UserGameUseCase</text>
+  <rect x="360" y="444" width="180" height="45" rx="9" fill="#f3f3ff"/>
+  <text x="450" y="463" text-anchor="middle" class="small">Coordena operações</text>
+  <text x="450" y="480" text-anchor="middle" class="small">e regras de aplicação</text>
+
+  <rect x="610" y="225" width="250" height="310" rx="15" fill="#fff" stroke="#7ea5cf" stroke-width="2"/>
+  <rect x="610" y="225" width="250" height="48" rx="15" fill="#e3f0ff"/>
+  <path d="M610 258 H860 V273 H610 Z" fill="#e3f0ff"/>
+  <text x="630" y="256" class="card-title">Domain</text>
+  <text x="630" y="310" class="body" font-weight="700">Regras e contratos</text>
+  <text x="630" y="339" class="body">Entidades e exceções</text>
+  <text x="630" y="366" class="body">OrderPlacedCommand</text>
+  <text x="630" y="393" class="body">PaymentProcessedEvent</text>
+  <line x1="630" y1="412" x2="840" y2="412" stroke="#dce8f4"/>
+  <text x="630" y="440" class="body" font-weight="700">Portas (interfaces)</text>
+  <text x="630" y="466" class="small">IGameRepository • IPromotionRepository</text>
+  <text x="630" y="487" class="small">IUserGameRepository • IEventPublisher</text>
+  <rect x="630" y="501" width="210" height="23" rx="11" fill="#edf5ff"/>
+  <text x="735" y="517" text-anchor="middle" class="small">independente de infraestrutura</text>
+
+  <rect x="900" y="245" width="220" height="270" rx="15" class="module"/>
+  <rect x="900" y="245" width="220" height="48" rx="15" fill="#fff0d9"/>
+  <path d="M900 278 H1120 V293 H900 Z" fill="#fff0d9"/>
+  <text x="920" y="276" class="card-title">Adapters / Outbound</text>
+  <text x="920" y="329" class="body" font-weight="700">Persistência</text>
+  <text x="920" y="354" class="body">GameRepository</text>
+  <text x="920" y="377" class="body">PromotionRepository</text>
+  <text x="920" y="400" class="body">UserGameRepository</text>
+  <line x1="920" y1="419" x2="1100" y2="419" stroke="#e0e8f0"/>
+  <text x="920" y="447" class="body" font-weight="700">Eventos</text>
+  <text x="920" y="472" class="body">OrderPlacedPublisher</text>
+  <text x="920" y="497" class="small">Implementa as portas do domínio</text>
+
+  <path d="M290 370 H332" fill="none" stroke="#46627f" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="311" y="354" text-anchor="middle" class="arrow-label">chama</text>
+  <path d="M560 370 H602" fill="none" stroke="#46627f" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="581" y="354" text-anchor="middle" class="arrow-label">usa portas</text>
+  <path d="M900 370 H868" fill="none" stroke="#46627f" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="1210" y="220" width="320" height="155" rx="15" class="module"/>
+  <rect x="1210" y="220" width="320" height="46" rx="15" fill="#e8f2ff"/>
+  <path d="M1210 251 H1530 V266 H1210 Z" fill="#e8f2ff"/>
+  <text x="1232" y="251" class="card-title">SQL Server</text>
+  <text x="1232" y="296" class="body">Banco relacional do catálogo</text>
+  <text x="1232" y="322" class="body">e da biblioteca de usuários</text>
+  <rect x="1232" y="339" width="190" height="22" rx="11" fill="#eef5fc"/>
+  <text x="1327" y="355" text-anchor="middle" class="small">Entity Framework Core</text>
+
+  <rect x="1210" y="410" width="320" height="155" rx="15" class="module"/>
+  <rect x="1210" y="410" width="320" height="46" rx="15" fill="#fff0df"/>
+  <path d="M1210 441 H1530 V456 H1210 Z" fill="#fff0df"/>
+  <text x="1232" y="441" class="card-title">RabbitMQ + MassTransit</text>
+  <text x="1232" y="486" class="body">Publica OrderPlacedCommand</text>
+  <text x="1232" y="512" class="body">Recebe PaymentProcessedEvent</text>
+  <text x="1232" y="540" class="small">Integração assíncrona</text>
+
+  <path d="M1120 335 H1162 V297 H1202" fill="none" stroke="#46627f" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1160" y="282" text-anchor="middle" class="arrow-label">repositórios</text>
+  <path d="M1120 450 H1202" fill="none" stroke="#17836f" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+  <text x="1160" y="435" text-anchor="middle" class="arrow-label">eventos</text>
+
+  <rect x="70" y="570" width="1050" height="58" rx="12" fill="#eaf0f6" stroke="#d4dfe9"/>
+  <text x="92" y="595" class="chip">Infrastructure</text>
+  <text x="225" y="595" class="body">Injeção de dependências • Entity Framework Core • migrations • inicialização do banco • configuração de mensageria</text>
+  <text x="92" y="615" class="small">Conecta os adaptadores às tecnologias e configura os serviços da aplicação.</text>
+
+  <rect x="45" y="700" width="1510" height="250" rx="20" fill="#fff" stroke="#d3dfeb" stroke-width="1.5"/>
+  <text x="70" y="738" class="section">Fluxo assíncrono de compra e pagamento</text>
+  <text x="70" y="764" class="small">A compra só entra na biblioteca após a confirmação de pagamento aprovado.</text>
+
+  <rect x="75" y="790" width="260" height="58" rx="12" fill="#e9f4ff" stroke="#b9d1e8"/>
+  <text x="205" y="814" text-anchor="middle" class="chip">1 • Solicitação HTTP</text>
+  <text x="205" y="835" text-anchor="middle" class="small">POST /api/LibraryOfGames/{gameId}</text>
+  <rect x="390" y="790" width="230" height="58" rx="12" fill="#f0efff" stroke="#cdcaed"/>
+  <text x="505" y="814" text-anchor="middle" class="chip">2 • UserGameUseCase</text>
+  <text x="505" y="835" text-anchor="middle" class="small">confere jogo e biblioteca</text>
+  <rect x="675" y="790" width="240" height="58" rx="12" fill="#fff3df" stroke="#ecd4a9"/>
+  <text x="795" y="814" text-anchor="middle" class="chip">3 • OrderPlacedCommand</text>
+  <text x="795" y="835" text-anchor="middle" class="small">publicado no RabbitMQ</text>
+  <rect x="970" y="790" width="230" height="58" rx="12" fill="#fff3df" stroke="#ecd4a9"/>
+  <text x="1085" y="814" text-anchor="middle" class="chip">4 • Serviço de pagamento</text>
+  <text x="1085" y="835" text-anchor="middle" class="small">processa o pedido</text>
+  <path d="M335 819 H382" fill="none" stroke="#46627f" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M620 819 H667" fill="none" stroke="#46627f" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M915 819 H962" fill="none" stroke="#17836f" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <text x="643" y="804" text-anchor="middle" class="arrow-label">publica</text>
+  <text x="938" y="804" text-anchor="middle" class="arrow-label">broker</text>
+
+  <rect x="75" y="867" width="260" height="58" rx="12" fill="#fff3df" stroke="#ecd4a9"/>
+  <text x="205" y="891" text-anchor="middle" class="chip">5 • PaymentProcessedEvent</text>
+  <text x="205" y="912" text-anchor="middle" class="small">retorna pelo RabbitMQ</text>
+  <rect x="390" y="867" width="230" height="58" rx="12" fill="#e9f4ff" stroke="#b9d1e8"/>
+  <text x="505" y="891" text-anchor="middle" class="chip">6 • Consumer</text>
+  <text x="505" y="912" text-anchor="middle" class="small">encaminha o evento</text>
+  <rect x="675" y="867" width="240" height="58" rx="12" fill="#f0efff" stroke="#cdcaed"/>
+  <text x="795" y="891" text-anchor="middle" class="chip">7 • UserGameUseCase</text>
+  <text x="795" y="912" text-anchor="middle" class="small">só continua se Approved</text>
+  <rect x="970" y="867" width="230" height="58" rx="12" fill="#fff0df" stroke="#ecd4a9"/>
+  <text x="1085" y="891" text-anchor="middle" class="chip">8 • SQL Server</text>
+  <text x="1085" y="912" text-anchor="middle" class="small">grava jogo na biblioteca</text>
+  <path d="M335 896 H382" fill="none" stroke="#17836f" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <path d="M620 896 H667" fill="none" stroke="#46627f" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M915 896 H962" fill="none" stroke="#46627f" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="1220" y="790" width="300" height="135" rx="14" fill="#f7f5ff" stroke="#b8add8" stroke-width="1.5"/>
+  <text x="1242" y="820" class="card-title">Orquestração separada</text>
+  <text x="1242" y="850" class="body">Docker Compose, manifests Kubernetes</text>
+  <text x="1242" y="876" class="body">e configurações de execução ficam</text>
+  <text x="1242" y="902" class="body" font-weight="700">no repositório FCG-Orchestration.</text>
+
+  <text x="800" y="1008" text-anchor="middle" class="small">O projeto contém a API e o Dockerfile; a implantação dos serviços é mantida separadamente.</text>
+</svg>

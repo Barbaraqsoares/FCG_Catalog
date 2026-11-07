@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1120" viewBox="0 0 1500 1120" role="img" aria-labelledby="title description">
+  <title id="title">Fluxograma do FCG Catalog</title>
+  <desc id="description">Fluxograma dos fluxos cobertos pelo FCG Catalog: gerenciamento de jogos e promoções, solicitação de compra e inclusão do jogo na biblioteca após pagamento aprovado.</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#10233f"/>
+      <stop offset="1" stop-color="#1b4b70"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52708c"/>
+    </marker>
+    <marker id="greenArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#19836f"/>
+    </marker>
+    <style>
+      text { font-family: "Segoe UI", Arial, sans-serif; fill: #18304c; }
+      .title { font-size: 36px; font-weight: 700; fill: #fff; }
+      .subtitle { font-size: 17px; fill: #d7e6f4; }
+      .lane { font-size: 20px; font-weight: 700; }
+      .node { font-size: 16px; font-weight: 600; }
+      .note { font-size: 14px; fill: #52677e; }
+      .label { font-size: 13px; font-weight: 700; fill: #52677e; }
+      .box { fill: #fff; stroke: #b9c9d8; stroke-width: 1.7; }
+      .process { fill: #eaf3ff; stroke: #9db8d4; stroke-width: 1.7; }
+      .data { fill: #fff3df; stroke: #e2c992; stroke-width: 1.7; }
+      .messaging { fill: #fff0df; stroke: #e5bf8d; stroke-width: 1.7; }
+      .success { fill: #e8f5ef; stroke: #8dbbaa; stroke-width: 1.7; }
+      .decision { fill: #fff8df; stroke: #d8c575; stroke-width: 1.7; }
+      .line { fill: none; stroke: #52708c; stroke-width: 2.2; marker-end: url(#arrow); }
+      .line-green { fill: none; stroke: #19836f; stroke-width: 2.4; marker-end: url(#greenArrow); }
+    </style>
+  </defs>
+
+  <rect width="1500" height="1120" fill="#f3f7fb"/>
+  <rect width="1500" height="125" fill="url(#header)"/>
+  <text x="54" y="58" class="title">FCG Catalog | Fluxograma</text>
+  <text x="56" y="91" class="subtitle">Fluxos da API: catálogo, promoções, compra e biblioteca de jogos</text>
+
+  <rect x="45" y="155" width="1410" height="300" rx="18" fill="#f7fbff" stroke="#bfd0df" stroke-width="1.5"/>
+  <rect x="66" y="138" width="385" height="37" rx="18" fill="#e1edf8"/>
+  <text x="86" y="163" class="lane">1. Jogos e promoções (HTTP)</text>
+
+  <rect x="85" y="220" width="190" height="74" rx="14" class="box"/>
+  <text x="180" y="249" text-anchor="middle" class="node">Cliente / consumidor</text>
+  <text x="180" y="273" text-anchor="middle" class="note">solicita uma operação</text>
+  <rect x="355" y="220" width="220" height="74" rx="14" class="process"/>
+  <text x="465" y="249" text-anchor="middle" class="node">Controller HTTP</text>
+  <text x="465" y="273" text-anchor="middle" class="note">Games / Promotions</text>
+  <rect x="655" y="220" width="220" height="74" rx="14" class="process"/>
+  <text x="765" y="249" text-anchor="middle" class="node">Use case</text>
+  <text x="765" y="273" text-anchor="middle" class="note">valida e executa regras</text>
+  <rect x="955" y="220" width="220" height="74" rx="14" class="data"/>
+  <text x="1065" y="249" text-anchor="middle" class="node">Repository</text>
+  <text x="1065" y="273" text-anchor="middle" class="note">acessa dados</text>
+  <rect x="1255" y="220" width="155" height="74" rx="14" class="data"/>
+  <text x="1332" y="249" text-anchor="middle" class="node">SQL Server</text>
+  <text x="1332" y="273" text-anchor="middle" class="note">persistência</text>
+
+  <path d="M275 257 H347" class="line"/>
+  <path d="M575 257 H647" class="line"/>
+  <path d="M875 257 H947" class="line"/>
+  <path d="M1175 257 H1247" class="line"/>
+  <path d="M1332 294 V342 H465 V302" class="line"/>
+  <text x="898" y="334" text-anchor="middle" class="label">resultado da operação retorna ao cliente</text>
+  <text x="86" y="399" class="note">Operações disponíveis: criar, consultar, atualizar e remover jogos; criar, consultar e remover promoções.</text>
+
+  <rect x="45" y="490" width="1410" height="570" rx="18" fill="#f7fbff" stroke="#bfd0df" stroke-width="1.5"/>
+  <rect x="66" y="473" width="430" height="37" rx="18" fill="#e1edf8"/>
+  <text x="86" y="498" class="lane">2. Compra e biblioteca (eventos)</text>
+
+  <rect x="85" y="550" width="195" height="74" rx="14" class="box"/>
+  <text x="182" y="579" text-anchor="middle" class="node">Cliente / usuário</text>
+  <text x="182" y="603" text-anchor="middle" class="note">solicita compra</text>
+  <rect x="355" y="550" width="220" height="74" rx="14" class="process"/>
+  <text x="465" y="579" text-anchor="middle" class="node">UserGameController</text>
+  <text x="465" y="603" text-anchor="middle" class="note">POST /LibraryOfGames/{gameId}</text>
+  <rect x="650" y="550" width="220" height="74" rx="14" class="process"/>
+  <text x="760" y="579" text-anchor="middle" class="node">UserGameUseCase</text>
+  <text x="760" y="603" text-anchor="middle" class="note">valida jogo e biblioteca</text>
+
+  <path d="M280 587 H347" class="line"/>
+  <path d="M575 587 H642" class="line"/>
+
+  <polygon points="955,535 1030,587 955,639 880,587" class="decision"/>
+  <text x="955" y="582" text-anchor="middle" class="node">Jogo</text>
+  <text x="955" y="602" text-anchor="middle" class="node">válido?</text>
+  <path d="M870 587 H880" class="line"/>
+  <text x="914" y="568" class="label">verifica</text>
+
+  <rect x="1110" y="530" width="275" height="68" rx="14" class="messaging"/>
+  <text x="1247" y="557" text-anchor="middle" class="node">Publica OrderPlacedCommand</text>
+  <text x="1247" y="579" text-anchor="middle" class="note">RabbitMQ • pedido, usuário, jogo, valor</text>
+  <path d="M1030 572 H1102" class="line-green"/>
+  <text x="1063" y="558" class="label">sim</text>
+
+  <rect x="1110" y="640" width="275" height="68" rx="14" class="messaging"/>
+  <text x="1247" y="667" text-anchor="middle" class="node">Serviço de pagamentos</text>
+  <text x="1247" y="689" text-anchor="middle" class="note">fora deste repositório</text>
+  <path d="M1247 598 V632" class="line-green"/>
+
+  <rect x="1110" y="755" width="275" height="68" rx="14" class="messaging"/>
+  <text x="1247" y="782" text-anchor="middle" class="node">PaymentProcessedEvent</text>
+  <text x="1247" y="804" text-anchor="middle" class="note">resultado retorna pelo RabbitMQ</text>
+  <path d="M1247 708 V747" class="line-green"/>
+
+  <rect x="760" y="755" width="255" height="68" rx="14" class="process"/>
+  <text x="887" y="782" text-anchor="middle" class="node">PaymentProcessedConsumer</text>
+  <text x="887" y="804" text-anchor="middle" class="note">encaminha evento ao caso de uso</text>
+  <path d="M1110 789 H1023" class="line"/>
+
+  <polygon points="625,738 705,789 625,840 545,789" class="decision"/>
+  <text x="625" y="784" text-anchor="middle" class="node">Pagamento</text>
+  <text x="625" y="804" text-anchor="middle" class="node">aprovado?</text>
+  <path d="M760 789 H713" class="line"/>
+
+  <rect x="285" y="755" width="210" height="68" rx="14" class="success"/>
+  <text x="390" y="782" text-anchor="middle" class="node">UserGameUseCase</text>
+  <text x="390" y="804" text-anchor="middle" class="note">registra a compra</text>
+  <path d="M545 789 H503" class="line-green"/>
+  <text x="520" y="773" class="label">sim</text>
+
+  <rect x="85" y="755" width="155" height="68" rx="14" class="data"/>
+  <text x="162" y="782" text-anchor="middle" class="node">SQL Server</text>
+  <text x="162" y="804" text-anchor="middle" class="note">biblioteca atualizada</text>
+  <path d="M285 789 H248" class="line-green"/>
+
+  <rect x="545" y="900" width="160" height="62" rx="14" class="box"/>
+  <text x="625" y="926" text-anchor="middle" class="node">Sem alteração</text>
+  <text x="625" y="947" text-anchor="middle" class="note">status não aprovado</text>
+  <path d="M625 840 V892" class="line"/>
+  <text x="638" y="870" class="label">não</text>
+
+  <rect x="760" y="900" width="285" height="62" rx="14" class="box"/>
+  <text x="902" y="926" text-anchor="middle" class="node">Consulta da biblioteca</text>
+  <text x="902" y="947" text-anchor="middle" class="note">GET /LibraryOfGames/{userId}</text>
+  <path d="M760 935 H700 V1000 H162 V831" class="line"/>
+  <text x="910" y="985" class="note">Jogo já existente: a compra não é publicada novamente.</text>
+
+</svg>

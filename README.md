@@ -31,6 +31,12 @@ e mensageria são adaptadores substituíveis.
 Tecnologias principais: .NET 8 / ASP.NET Core, Entity Framework Core, SQL Server,
 MassTransit e RabbitMQ.
 
+![Diagrama da arquitetura do FCG Catalog](docs/arquitetura.svg)
+
+### Fluxo das operações
+
+![Fluxograma dos fluxos do FCG Catalog](docs/fluxograma.svg)
+
 ## Código e implantação
 
 Este repositório contém o código-fonte da API e seu `Dockerfile`. Os arquivos de
